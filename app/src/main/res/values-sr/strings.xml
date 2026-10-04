@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_cards">Картице</string>
+    <string name="tab_search">Претрага</string>
+    <string name="tab_scanner">Скенер</string>
+    <string name="tab_settings">Подешавања</string>
+
+    <string name="filter_all">Све</string>
+    <string name="filter_cards">Картице</string>
+    <string name="filter_tickets">Карте</string>
+
+    <string name="kind_card">Картица</string>
+    <string name="kind_ticket">Карта</string>
+
+    <string name="add_card">Додај картицу</string>
+    <string name="add_file">Датотека .pkpass</string>
+    <string name="add_image">Слика бар-кода из галерије</string>
+    <string name="add_photo">Фотографија картице</string>
+    <string name="add_manual">Унеси број ручно</string>
+    <string name="add_scan">Скенирај бар-код</string>
+    <string name="close">Затвори</string>
+    <string name="cancel">Откажи</string>
+    <string name="save">Готово</string>
+    <string name="delete">Избриши</string>
+    <string name="delete_title">Избрисати „%1$s“?</string>
+    <string name="delete_text">Картица и њене датотеке биће уклоњене са телефона.</string>
+
+    <string name="empty_title">Гомила је празна</string>
+    <string name="empty_tickets_title">Још нема карата</string>
+    <string name="empty_hint">Додирните + да додате картицу или датотеку .pkpass</string>
+
+    <string name="date_today">данас, %1$s</string>
+    <string name="date_tomorrow">сутра, %1$s</string>
+    <string name="date_yesterday">јуче, %1$s</string>
+
+    <string name="action_share">Подели</string>
+    <string name="action_edit">Измени</string>
+    <string name="action_pin">Закачи</string>
+    <string name="action_unpin">Откачи</string>
+    <string name="action_details">Детаљи</string>
+    <string name="action_update">Ажурирај</string>
+    <string name="barcode_bright">%1$s · осветљеност аутоматски појачана</string>
+    <string name="no_barcode">Ова картица нема бар-код</string>
+
+    <string name="info_last_used">Последње коришћење</string>
+    <string name="info_added">Додато</string>
+    <string name="info_updated">Провера ажурирања</string>
+    <string name="info_note">Белешка</string>
+
+    <string name="source_scan">скенирањем камером</string>
+    <string name="source_photo">са фотографије</string>
+    <string name="source_gallery">из галерије</string>
+    <string name="source_manual">ручно</string>
+    <string name="source_pkpass">из .pkpass</string>
+
+    <string name="edit_new_title">Нова картица</string>
+    <string name="edit_title">Измена картице</string>
+    <string name="edit_name">Назив</string>
+    <string name="edit_name_placeholder">Назив</string>
+    <string name="edit_subtitle">Поднаслов</string>
+    <string name="edit_subtitle_hint">На пример, кафић</string>
+    <string name="edit_number">Број картице</string>
+    <string name="edit_format">Формат бар-кода</string>
+    <string name="edit_format_auto">Аутоматски</string>
+    <string name="edit_color">Боја</string>
+
+    <string name="search_hint">Назив, број или белешка</string>
+    <string name="search_empty">Ништа није пронађено</string>
+
+    <string name="scan_flash">Блиц</string>
+    <string name="scan_hint_code">Усмерите камеру на бар-код или QR код — картица се додаје аутоматски</string>
+    <string name="scan_hint_photo">Фотографишите предњу страну картице — она постаје насловна слика</string>
+    <string name="scan_no_camera">Нема приступа камери</string>
+    <string name="scan_grant">Дозволи камеру</string>
+    <string name="scan_shutter">Сликај</string>
+    <string name="scan_not_found">Бар-код није пронађен</string>
+    <string name="scan_capture_failed">Фотографисање није успело</string>
+
+    <string name="import_failed">Отварање датотеке .pkpass није успело</string>
+    <string name="import_many">Додато картица: %1$d</string>
+    <string name="update_done">Пропусница је ажурирана</string>
+    <string name="update_same">Нема промена</string>
+    <string name="update_failed">Ажурирање пропуснице није успело</string>
+    <string name="updates_channel">Ажурирања пропусница</string>
+
+    <string name="settings_theme">Тема</string>
+    <string name="theme_system">Подразумевано у систему</string>
+    <string name="theme_light">Светла</string>
+    <string name="theme_dark">Тамна</string>
+    <string name="settings_palette">Шема боја</string>
+    <string name="palette_warm">Топла</string>
+    <string name="palette_classic">Класична</string>
+    <string name="settings_language">Језик</string>
+    <string name="language_system">Подразумевано у систему</string>
+    <string name="settings_brightness">Највећа осветљеност</string>
+    <string name="settings_brightness_hint">Појачај осветљеност екрана док је картица отворена</string>
+    <string name="settings_auto_update">Аутоматски ажурирај пропуснице</string>
+    <string name="settings_auto_update_hint">Тражи свеже пропуснице од издавалаца и обавести о променама</string>
+    <string name="settings_update_interval">Интервал провере</string>
+    <string name="settings_version">Верзија</string>
+    <string name="settings_font">Фонт</string>
+    <string name="settings_app_update">Проверавај ажурирања апликације</string>
+    <string name="settings_app_update_hint">Једном недељно, у издањима на GitHub-у</string>
+    <string name="app_update_channel">Ажурирања апликације</string>
+    <string name="app_update_available">Доступна је верзија %1$s</string>
+    <string name="app_update_tap">Додирните да видите шта је ново и инсталирате</string>
+    <string name="app_update_checking">Провера…</string>
+    <string name="app_update_latest">Ово је најновија верзија</string>
+    <string name="app_update_failed">Провера ажурирања није успела</string>
+    <string name="app_update_downloading">Преузимање… %1$d%%</string>
+    <string name="app_update_install">Преузми и инсталирај</string>
+    <string name="app_update_dev">Развојна верзија, не ажурира се</string>
+
+    <plurals name="hours">
+        <item quantity="one">%d сат</item>
+        <item quantity="few">%d сата</item>
+        <item quantity="other">%d сати</item>
+    </plurals>
+</resources>

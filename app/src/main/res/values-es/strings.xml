@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_cards">Tarjetas</string>
+    <string name="tab_search">Buscar</string>
+    <string name="tab_scanner">Escáner</string>
+    <string name="tab_settings">Ajustes</string>
+
+    <string name="filter_all">Todo</string>
+    <string name="filter_cards">Tarjetas</string>
+    <string name="filter_tickets">Entradas</string>
+
+    <string name="kind_card">Tarjeta</string>
+    <string name="kind_ticket">Entrada</string>
+
+    <string name="add_card">Añadir tarjeta</string>
+    <string name="add_file">Archivo .pkpass</string>
+    <string name="add_image">Imagen de código de barras de la galería</string>
+    <string name="add_photo">Foto de la tarjeta</string>
+    <string name="add_manual">Introducir el número a mano</string>
+    <string name="add_scan">Escanear un código de barras</string>
+    <string name="close">Cerrar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Listo</string>
+    <string name="delete">Eliminar</string>
+    <string name="delete_title">¿Eliminar «%1$s»?</string>
+    <string name="delete_text">La tarjeta y sus archivos se eliminarán del teléfono.</string>
+
+    <string name="empty_title">La pila está vacía</string>
+    <string name="empty_tickets_title">Aún no hay entradas</string>
+    <string name="empty_hint">Toca + para añadir una tarjeta o un archivo .pkpass</string>
+
+    <string name="date_today">hoy, %1$s</string>
+    <string name="date_tomorrow">mañana, %1$s</string>
+    <string name="date_yesterday">ayer, %1$s</string>
+
+    <string name="action_share">Compartir</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_pin">Fijar</string>
+    <string name="action_unpin">Soltar</string>
+    <string name="action_details">Detalles</string>
+    <string name="action_update">Actualizar</string>
+    <string name="barcode_bright">%1$s · brillo aumentado automáticamente</string>
+    <string name="no_barcode">Esta tarjeta no tiene código de barras</string>
+
+    <string name="info_last_used">Último uso</string>
+    <string name="info_added">Añadida</string>
+    <string name="info_updated">Última comprobación</string>
+    <string name="info_note">Nota</string>
+
+    <string name="source_scan">con la cámara</string>
+    <string name="source_photo">desde una foto</string>
+    <string name="source_gallery">desde la galería</string>
+    <string name="source_manual">a mano</string>
+    <string name="source_pkpass">desde un .pkpass</string>
+
+    <string name="edit_new_title">Nueva tarjeta</string>
+    <string name="edit_title">Editar tarjeta</string>
+    <string name="edit_name">Nombre</string>
+    <string name="edit_name_placeholder">Nombre</string>
+    <string name="edit_subtitle">Subtítulo</string>
+    <string name="edit_subtitle_hint">Por ejemplo, una cafetería</string>
+    <string name="edit_number">Número de tarjeta</string>
+    <string name="edit_format">Formato del código de barras</string>
+    <string name="edit_format_auto">Automático</string>
+    <string name="edit_color">Color</string>
+
+    <string name="search_hint">Nombre, número o nota</string>
+    <string name="search_empty">No se ha encontrado nada</string>
+
+    <string name="scan_flash">Flash</string>
+    <string name="scan_hint_code">Apunta la cámara a un código de barras o QR — la tarjeta se añade automáticamente</string>
+    <string name="scan_hint_photo">Haz una foto del anverso de la tarjeta — será la portada</string>
+    <string name="scan_no_camera">Sin acceso a la cámara</string>
+    <string name="scan_grant">Permitir la cámara</string>
+    <string name="scan_shutter">Disparar</string>
+    <string name="scan_not_found">No se ha encontrado ningún código de barras</string>
+    <string name="scan_capture_failed">No se ha podido hacer la foto</string>
+
+    <string name="import_failed">No se ha podido abrir el archivo .pkpass</string>
+    <string name="import_many">Tarjetas añadidas: %1$d</string>
+    <string name="update_done">El pase se ha actualizado</string>
+    <string name="update_same">Sin cambios</string>
+    <string name="update_failed">No se ha podido actualizar el pase</string>
+    <string name="updates_channel">Actualizaciones de pases</string>
+
+    <string name="settings_theme">Tema</string>
+    <string name="theme_system">Predeterminado del sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="settings_palette">Esquema de colores</string>
+    <string name="palette_warm">Cálido</string>
+    <string name="palette_classic">Clásico</string>
+    <string name="settings_language">Idioma</string>
+    <string name="language_system">Predeterminado del sistema</string>
+    <string name="settings_brightness">Brillo máximo</string>
+    <string name="settings_brightness_hint">Subir el brillo de la pantalla mientras hay una tarjeta abierta</string>
+    <string name="settings_auto_update">Actualizar los pases automáticamente</string>
+    <string name="settings_auto_update_hint">Pedir pases nuevos a los emisores y avisar de los cambios</string>
+    <string name="settings_update_interval">Intervalo de comprobación</string>
+    <string name="settings_version">Versión</string>
+    <string name="settings_font">Fuente</string>
+    <string name="settings_app_update">Buscar actualizaciones de la app</string>
+    <string name="settings_app_update_hint">Una vez por semana, en las versiones publicadas en GitHub</string>
+    <string name="app_update_channel">Actualizaciones de la app</string>
+    <string name="app_update_available">La versión %1$s está disponible</string>
+    <string name="app_update_tap">Toca para ver las novedades e instalarla</string>
+    <string name="app_update_checking">Comprobando…</string>
+    <string name="app_update_latest">Esta es la última versión</string>
+    <string name="app_update_failed">No se han podido buscar actualizaciones</string>
+    <string name="app_update_downloading">Descargando… %1$d%%</string>
+    <string name="app_update_install">Descargar e instalar</string>
+    <string name="app_update_dev">Versión de desarrollo, no se actualiza</string>
+
+    <plurals name="hours">
+        <item quantity="one">%d hora</item>
+        <item quantity="many">%d horas</item>
+        <item quantity="other">%d horas</item>
+    </plurals>
+</resources>

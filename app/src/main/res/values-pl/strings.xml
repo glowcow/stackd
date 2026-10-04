@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_cards">Karty</string>
+    <string name="tab_search">Szukaj</string>
+    <string name="tab_scanner">Skaner</string>
+    <string name="tab_settings">Ustawienia</string>
+
+    <string name="filter_all">Wszystko</string>
+    <string name="filter_cards">Karty</string>
+    <string name="filter_tickets">Bilety</string>
+
+    <string name="kind_card">Karta</string>
+    <string name="kind_ticket">Bilet</string>
+
+    <string name="add_card">Dodaj kartę</string>
+    <string name="add_file">Plik .pkpass</string>
+    <string name="add_image">Obraz kodu kreskowego z galerii</string>
+    <string name="add_photo">Zdjęcie karty</string>
+    <string name="add_manual">Wpisz numer ręcznie</string>
+    <string name="add_scan">Zeskanuj kod kreskowy</string>
+    <string name="close">Zamknij</string>
+    <string name="cancel">Anuluj</string>
+    <string name="save">Gotowe</string>
+    <string name="delete">Usuń</string>
+    <string name="delete_title">Usunąć „%1$s”?</string>
+    <string name="delete_text">Karta i jej pliki zostaną usunięte z telefonu.</string>
+
+    <string name="empty_title">Stos jest pusty</string>
+    <string name="empty_tickets_title">Nie ma jeszcze biletów</string>
+    <string name="empty_hint">Dotknij +, aby dodać kartę lub plik .pkpass</string>
+
+    <string name="date_today">dzisiaj, %1$s</string>
+    <string name="date_tomorrow">jutro, %1$s</string>
+    <string name="date_yesterday">wczoraj, %1$s</string>
+
+    <string name="action_share">Udostępnij</string>
+    <string name="action_edit">Edytuj</string>
+    <string name="action_pin">Przypnij</string>
+    <string name="action_unpin">Odepnij</string>
+    <string name="action_details">Szczegóły</string>
+    <string name="action_update">Aktualizuj</string>
+    <string name="barcode_bright">%1$s · jasność podniesiona automatycznie</string>
+    <string name="no_barcode">Ta karta nie ma kodu kreskowego</string>
+
+    <string name="info_last_used">Ostatnio użyta</string>
+    <string name="info_added">Dodana</string>
+    <string name="info_updated">Ostatnie sprawdzenie</string>
+    <string name="info_note">Notatka</string>
+
+    <string name="source_scan">skanem z aparatu</string>
+    <string name="source_photo">ze zdjęcia</string>
+    <string name="source_gallery">z galerii</string>
+    <string name="source_manual">ręcznie</string>
+    <string name="source_pkpass">z pliku .pkpass</string>
+
+    <string name="edit_new_title">Nowa karta</string>
+    <string name="edit_title">Edycja karty</string>
+    <string name="edit_name">Nazwa</string>
+    <string name="edit_name_placeholder">Nazwa</string>
+    <string name="edit_subtitle">Podtytuł</string>
+    <string name="edit_subtitle_hint">Na przykład kawiarnia</string>
+    <string name="edit_number">Numer karty</string>
+    <string name="edit_format">Format kodu kreskowego</string>
+    <string name="edit_format_auto">Automatycznie</string>
+    <string name="edit_color">Kolor</string>
+
+    <string name="search_hint">Nazwa, numer lub notatka</string>
+    <string name="search_empty">Nic nie znaleziono</string>
+
+    <string name="scan_flash">Lampa</string>
+    <string name="scan_hint_code">Skieruj aparat na kod kreskowy lub QR — karta zostanie dodana automatycznie</string>
+    <string name="scan_hint_photo">Zrób zdjęcie przodu karty — stanie się okładką</string>
+    <string name="scan_no_camera">Brak dostępu do aparatu</string>
+    <string name="scan_grant">Zezwól na aparat</string>
+    <string name="scan_shutter">Zrób zdjęcie</string>
+    <string name="scan_not_found">Nie znaleziono kodu kreskowego</string>
+    <string name="scan_capture_failed">Nie udało się zrobić zdjęcia</string>
+
+    <string name="import_failed">Nie udało się otworzyć pliku .pkpass</string>
+    <string name="import_many">Dodane karty: %1$d</string>
+    <string name="update_done">Karta została zaktualizowana</string>
+    <string name="update_same">Bez zmian</string>
+    <string name="update_failed">Nie udało się zaktualizować karty</string>
+    <string name="updates_channel">Aktualizacje kart</string>
+
+    <string name="settings_theme">Motyw</string>
+    <string name="theme_system">Domyślny systemu</string>
+    <string name="theme_light">Jasny</string>
+    <string name="theme_dark">Ciemny</string>
+    <string name="settings_palette">Schemat kolorów</string>
+    <string name="palette_warm">Ciepły</string>
+    <string name="palette_classic">Klasyczny</string>
+    <string name="settings_language">Język</string>
+    <string name="language_system">Domyślny systemu</string>
+    <string name="settings_brightness">Maksymalna jasność</string>
+    <string name="settings_brightness_hint">Podnoś jasność ekranu, gdy karta jest otwarta</string>
+    <string name="settings_auto_update">Aktualizuj karty automatycznie</string>
+    <string name="settings_auto_update_hint">Pobieraj świeże karty od wystawców i powiadamiaj o zmianach</string>
+    <string name="settings_update_interval">Częstotliwość sprawdzania</string>
+    <string name="settings_version">Wersja</string>
+    <string name="settings_font">Czcionka</string>
+    <string name="settings_app_update">Sprawdzaj aktualizacje aplikacji</string>
+    <string name="settings_app_update_hint">Raz w tygodniu, w wydaniach na GitHubie</string>
+    <string name="app_update_channel">Aktualizacje aplikacji</string>
+    <string name="app_update_available">Dostępna jest wersja %1$s</string>
+    <string name="app_update_tap">Dotknij, aby zobaczyć nowości i zainstalować</string>
+    <string name="app_update_checking">Sprawdzanie…</string>
+    <string name="app_update_latest">To najnowsza wersja</string>
+    <string name="app_update_failed">Nie udało się sprawdzić aktualizacji</string>
+    <string name="app_update_downloading">Pobieranie… %1$d%%</string>
+    <string name="app_update_install">Pobierz i zainstaluj</string>
+    <string name="app_update_dev">Wersja deweloperska, bez aktualizacji</string>
+
+    <plurals name="hours">
+        <item quantity="one">%d godzina</item>
+        <item quantity="few">%d godziny</item>
+        <item quantity="many">%d godzin</item>
+        <item quantity="other">%d godziny</item>
+    </plurals>
+</resources>

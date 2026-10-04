@@ -89,6 +89,9 @@
     <string name="theme_system">System default</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
+    <string name="settings_palette">Colour scheme</string>
+    <string name="palette_warm">Warm</string>
+    <string name="palette_classic">Classic</string>
     <string name="settings_language">Language</string>
     <string name="language_system">System default</string>
     <string name="settings_brightness">Maximum brightness</string>

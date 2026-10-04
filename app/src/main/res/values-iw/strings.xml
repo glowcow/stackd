@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_cards">כרטיסים</string>
+    <string name="tab_search">חיפוש</string>
+    <string name="tab_scanner">סורק</string>
+    <string name="tab_settings">הגדרות</string>
+
+    <string name="filter_all">הכול</string>
+    <string name="filter_cards">כרטיסים</string>
+    <string name="filter_tickets">כרטיסי כניסה</string>
+
+    <string name="kind_card">כרטיס</string>
+    <string name="kind_ticket">כרטיס כניסה</string>
+
+    <string name="add_card">הוספת כרטיס</string>
+    <string name="add_file">קובץ ‎.pkpass</string>
+    <string name="add_image">תמונת ברקוד מהגלריה</string>
+    <string name="add_photo">צילום של הכרטיס</string>
+    <string name="add_manual">הזנת המספר ידנית</string>
+    <string name="add_scan">סריקת ברקוד</string>
+    <string name="close">סגירה</string>
+    <string name="cancel">ביטול</string>
+    <string name="save">סיום</string>
+    <string name="delete">מחיקה</string>
+    <string name="delete_title">למחוק את “%1$s”?</string>
+    <string name="delete_text">הכרטיס והקבצים שלו יוסרו מהטלפון.</string>
+
+    <string name="empty_title">הערימה ריקה</string>
+    <string name="empty_tickets_title">עדיין אין כרטיסי כניסה</string>
+    <string name="empty_hint">יש להקיש על + כדי להוסיף כרטיס או קובץ ‎.pkpass</string>
+
+    <string name="date_today">היום, %1$s</string>
+    <string name="date_tomorrow">מחר, %1$s</string>
+    <string name="date_yesterday">אתמול, %1$s</string>
+
+    <string name="action_share">שיתוף</string>
+    <string name="action_edit">עריכה</string>
+    <string name="action_pin">הצמדה</string>
+    <string name="action_unpin">ביטול הצמדה</string>
+    <string name="action_details">פרטים</string>
+    <string name="action_update">עדכון</string>
+    <string name="barcode_bright">%1$s · הבהירות הוגברה אוטומטית</string>
+    <string name="no_barcode">לכרטיס הזה אין ברקוד</string>
+
+    <string name="info_last_used">שימוש אחרון</string>
+    <string name="info_added">נוסף</string>
+    <string name="info_updated">נבדקו עדכונים</string>
+    <string name="info_note">הערה</string>
+
+    <string name="source_scan">בסריקה במצלמה</string>
+    <string name="source_photo">מתמונה</string>
+    <string name="source_gallery">מהגלריה</string>
+    <string name="source_manual">ידנית</string>
+    <string name="source_pkpass">מקובץ ‎.pkpass</string>
+
+    <string name="edit_new_title">כרטיס חדש</string>
+    <string name="edit_title">עריכת כרטיס</string>
+    <string name="edit_name">שם</string>
+    <string name="edit_name_placeholder">שם</string>
+    <string name="edit_subtitle">כותרת משנה</string>
+    <string name="edit_subtitle_hint">לדוגמה, בית קפה</string>
+    <string name="edit_number">מספר הכרטיס</string>
+    <string name="edit_format">סוג הברקוד</string>
+    <string name="edit_format_auto">אוטומטי</string>
+    <string name="edit_color">צבע</string>
+
+    <string name="search_hint">שם, מספר או הערה</string>
+    <string name="search_empty">לא נמצא דבר</string>
+
+    <string name="scan_flash">פנס</string>
+    <string name="scan_hint_code">יש לכוון את המצלמה לברקוד או לקוד QR — הכרטיס יתווסף אוטומטית</string>
+    <string name="scan_hint_photo">יש לצלם את חזית הכרטיס — היא תהפוך לתמונת הכרטיס</string>
+    <string name="scan_no_camera">אין גישה למצלמה</string>
+    <string name="scan_grant">אישור גישה למצלמה</string>
+    <string name="scan_shutter">צילום</string>
+    <string name="scan_not_found">לא נמצא ברקוד</string>
+    <string name="scan_capture_failed">לא ניתן היה לצלם</string>
+
+    <string name="import_failed">לא ניתן היה לפתוח את קובץ ‎.pkpass</string>
+    <string name="import_many">כרטיסים שנוספו: %1$d</string>
+    <string name="update_done">הכרטיס עודכן</string>
+    <string name="update_same">אין שינויים</string>
+    <string name="update_failed">לא ניתן היה לעדכן את הכרטיס</string>
+    <string name="updates_channel">עדכוני כרטיסים</string>
+
+    <string name="settings_theme">ערכת נושא</string>
+    <string name="theme_system">ברירת המחדל של המערכת</string>
+    <string name="theme_light">בהירה</string>
+    <string name="theme_dark">כהה</string>
+    <string name="settings_palette">ערכת צבעים</string>
+    <string name="palette_warm">חמה</string>
+    <string name="palette_classic">קלאסית</string>
+    <string name="settings_language">שפה</string>
+    <string name="language_system">ברירת המחדל של המערכת</string>
+    <string name="settings_brightness">בהירות מרבית</string>
+    <string name="settings_brightness_hint">הגברת בהירות המסך כשכרטיס פתוח</string>
+    <string name="settings_auto_update">עדכון כרטיסים אוטומטי</string>
+    <string name="settings_auto_update_hint">בקשת כרטיסים עדכניים מהמנפיקים והתראה על שינויים</string>
+    <string name="settings_update_interval">תדירות הבדיקה</string>
+    <string name="settings_version">גרסה</string>
+    <string name="settings_font">גופן</string>
+    <string name="settings_app_update">בדיקת עדכונים לאפליקציה</string>
+    <string name="settings_app_update_hint">פעם בשבוע, בגרסאות שפורסמו ב-GitHub</string>
+    <string name="app_update_channel">עדכוני האפליקציה</string>
+    <string name="app_update_available">גרסה %1$s זמינה</string>
+    <string name="app_update_tap">יש להקיש כדי לראות מה חדש ולהתקין</string>
+    <string name="app_update_checking">בבדיקה…</string>
+    <string name="app_update_latest">זו הגרסה העדכנית ביותר</string>
+    <string name="app_update_failed">לא ניתן היה לבדוק עדכונים</string>
+    <string name="app_update_downloading">בהורדה… %1$d%%</string>
+    <string name="app_update_install">הורדה והתקנה</string>
+    <string name="app_update_dev">גרסת פיתוח, לא מתעדכנת</string>
+
+    <plurals name="hours">
+        <item quantity="one">שעה אחת</item>
+        <item quantity="two">שעתיים</item>
+        <item quantity="other">%d שעות</item>
+    </plurals>
+</resources>

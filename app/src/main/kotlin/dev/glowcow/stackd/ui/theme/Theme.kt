@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import dev.glowcow.stackd.R
+import dev.glowcow.stackd.data.Palette
 import dev.glowcow.stackd.data.ThemeMode
 
 @Immutable
@@ -56,8 +57,34 @@ val DarkColors = StackdColors(
     isDark = true,
 )
 
-/** Scanner is dark regardless of the app theme. */
-val ScannerColors = DarkColors.copy(bg = Color(0xFF141413), line = Color(0xFF45443F))
+/** Neutral greys with a blue accent, light. */
+val ClassicLightColors = StackdColors(
+    bg = Color(0xFFFAFAFA),
+    text = Color(0xFF111111),
+    muted = Color(0xFF666666),
+    line = Color(0xFFE2E2E2),
+    chip = Color(0xFFEBEBEB),
+    groupBg = Color(0xFFF1F1F1),
+    group = Color(0xFFFFFFFF),
+    accent = Color(0xFF1F6FEB),
+    isDark = false,
+)
+
+val ClassicDarkColors = StackdColors(
+    bg = Color(0xFF161616),
+    text = Color(0xFFF2F2F2),
+    muted = Color(0xFF9E9E9E),
+    line = Color(0xFF303030),
+    chip = Color(0xFF282828),
+    groupBg = Color(0xFF101010),
+    group = Color(0xFF202020),
+    accent = Color(0xFF4C8DF6),
+    isDark = true,
+)
+
+/** Scanner is dark regardless of the app theme; it keeps the accent of the scheme in use. */
+val ScannerColors: StackdColors
+    @Composable get() = DarkColors.copy(bg = Color(0xFF141413), line = Color(0xFF45443F), accent = StackdTheme.colors.accent)
 
 val LocalStackdColors = staticCompositionLocalOf { LightColors }
 
@@ -66,42 +93,46 @@ object StackdTheme {
         @Composable get() = LocalStackdColors.current
 }
 
-val InstrumentSans = FontFamily(
+val AppFont = FontFamily(
     listOf(400, 500, 600, 700).map { w ->
-        Font(R.font.instrument_sans, FontWeight(w), variationSettings = FontVariation.Settings(FontVariation.weight(w)))
+        Font(R.font.arimo, FontWeight(w), variationSettings = FontVariation.Settings(FontVariation.weight(w)))
     },
 )
 
-private val base = TextStyle(fontFamily = InstrumentSans, fontSize = 15.sp)
+private val base = TextStyle(fontFamily = AppFont, fontSize = 15.sp)
 
 private val typography = Typography().let { t ->
     Typography(
-        displayLarge = t.displayLarge.copy(fontFamily = InstrumentSans),
-        displayMedium = t.displayMedium.copy(fontFamily = InstrumentSans),
-        displaySmall = t.displaySmall.copy(fontFamily = InstrumentSans),
-        headlineLarge = t.headlineLarge.copy(fontFamily = InstrumentSans),
-        headlineMedium = t.headlineMedium.copy(fontFamily = InstrumentSans),
-        headlineSmall = t.headlineSmall.copy(fontFamily = InstrumentSans),
-        titleLarge = t.titleLarge.copy(fontFamily = InstrumentSans, fontWeight = FontWeight.Bold),
-        titleMedium = t.titleMedium.copy(fontFamily = InstrumentSans, fontWeight = FontWeight.Bold),
-        titleSmall = t.titleSmall.copy(fontFamily = InstrumentSans),
+        displayLarge = t.displayLarge.copy(fontFamily = AppFont),
+        displayMedium = t.displayMedium.copy(fontFamily = AppFont),
+        displaySmall = t.displaySmall.copy(fontFamily = AppFont),
+        headlineLarge = t.headlineLarge.copy(fontFamily = AppFont),
+        headlineMedium = t.headlineMedium.copy(fontFamily = AppFont),
+        headlineSmall = t.headlineSmall.copy(fontFamily = AppFont),
+        titleLarge = t.titleLarge.copy(fontFamily = AppFont, fontWeight = FontWeight.Bold),
+        titleMedium = t.titleMedium.copy(fontFamily = AppFont, fontWeight = FontWeight.Bold),
+        titleSmall = t.titleSmall.copy(fontFamily = AppFont),
         bodyLarge = base,
         bodyMedium = base.copy(fontSize = 14.sp),
         bodySmall = base.copy(fontSize = 12.sp),
-        labelLarge = t.labelLarge.copy(fontFamily = InstrumentSans, fontWeight = FontWeight.SemiBold),
-        labelMedium = t.labelMedium.copy(fontFamily = InstrumentSans),
-        labelSmall = t.labelSmall.copy(fontFamily = InstrumentSans),
+        labelLarge = t.labelLarge.copy(fontFamily = AppFont, fontWeight = FontWeight.SemiBold),
+        labelMedium = t.labelMedium.copy(fontFamily = AppFont),
+        labelSmall = t.labelSmall.copy(fontFamily = AppFont),
     )
 }
 
 @Composable
-fun StackdTheme(mode: ThemeMode = ThemeMode.SYSTEM, content: @Composable () -> Unit) {
+fun StackdTheme(mode: ThemeMode = ThemeMode.SYSTEM, palette: Palette = Palette.CLASSIC, content: @Composable () -> Unit) {
     val dark = when (mode) {
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
     }
-    StackdColorsProvider(if (dark) DarkColors else LightColors, content)
+    val colors = when (palette) {
+        Palette.WARM -> if (dark) DarkColors else LightColors
+        Palette.CLASSIC -> if (dark) ClassicDarkColors else ClassicLightColors
+    }
+    StackdColorsProvider(colors, content)
 }
 
 @Composable

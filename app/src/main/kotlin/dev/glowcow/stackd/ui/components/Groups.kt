@@ -24,9 +24,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.glowcow.stackd.ui.theme.StackdIcons
@@ -72,7 +75,13 @@ fun GroupRow(
         if (value != null) Text(value, color = c.muted, textAlign = TextAlign.End)
         when {
             trailing != null -> trailing()
-            onClick != null -> Icon(StackdIcons.Chevron, null, tint = c.muted, modifier = Modifier.size(18.dp))
+            // The chevron points along the reading direction.
+            onClick != null -> Icon(
+                StackdIcons.Chevron,
+                null,
+                tint = c.muted,
+                modifier = Modifier.size(18.dp).scale(if (LocalLayoutDirection.current == LayoutDirection.Rtl) -1f else 1f, 1f),
+            )
         }
     }
 }

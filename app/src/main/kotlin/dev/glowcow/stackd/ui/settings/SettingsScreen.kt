@@ -40,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.glowcow.stackd.R
 import dev.glowcow.stackd.StackdApp
 import dev.glowcow.stackd.data.AppSettings
+import dev.glowcow.stackd.data.Palette
 import dev.glowcow.stackd.data.SettingsStore
 import dev.glowcow.stackd.data.ThemeMode
 import dev.glowcow.stackd.ui.components.BottomBar
@@ -61,6 +62,7 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(private val store: SettingsStore, val updater: AppUpdater) : ViewModel() {
     val settings: StateFlow<AppSettings> = store.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
     fun setTheme(mode: ThemeMode) = viewModelScope.launch { store.setTheme(mode) }
+    fun setPalette(palette: Palette) = viewModelScope.launch { store.setPalette(palette) }
     fun setMaxBrightness(on: Boolean) = viewModelScope.launch { store.setMaxBrightness(on) }
     fun setAutoUpdate(on: Boolean) = viewModelScope.launch { store.setAutoUpdate(on) }
     fun setUpdateHours(hours: Int) = viewModelScope.launch { store.setUpdateHours(hours) }
@@ -78,7 +80,8 @@ fun SettingsScreen(
     val update by vm.updater.state.collectAsStateWithLifecycle()
     // The system keeps the per-app language, shared with Settings → Apps → App language.
     val locales = remember(context) { context.getSystemService(LocaleManager::class.java) }
-    var language by remember { mutableStateOf(locales.applicationLocales.takeUnless { it.isEmpty }?.get(0)?.language) }
+    // Hebrew reports its old code on some system versions.
+    var language by remember { mutableStateOf(locales.applicationLocales.takeUnless { it.isEmpty }?.get(0)?.language?.let { if (it == "iw") "he" else it }) }
     // Background updates report through notifications, so turning them on asks for the permission.
     val notifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
     fun setAutoUpdate(on: Boolean) {
@@ -113,6 +116,12 @@ fun SettingsScreen(
                     stringResource(R.string.settings_theme),
                     value = stringResource(THEMES.first { it.first == settings.theme }.second),
                     onClick = { picker = Picker.THEME },
+                )
+                GroupDivider()
+                GroupRow(
+                    stringResource(R.string.settings_palette),
+                    value = stringResource(PALETTES.first { it.first == settings.palette }.second),
+                    onClick = { picker = Picker.PALETTE },
                 )
                 GroupDivider()
                 GroupRow(
@@ -191,7 +200,7 @@ fun SettingsScreen(
                     )
                 }
                 GroupDivider()
-                GroupRow(stringResource(R.string.settings_font), value = "Instrument Sans · SIL OFL 1.1")
+                GroupRow(stringResource(R.string.settings_font), value = "Arimo · SIL OFL 1.1")
             }
         }
         BottomBar(TopTab.SETTINGS, onTab)
@@ -219,6 +228,13 @@ fun SettingsScreen(
             onSelect = { vm.setTheme(it) },
             onDismiss = { picker = null },
         )
+        Picker.PALETTE -> ChoiceSheet(
+            title = stringResource(R.string.settings_palette),
+            options = PALETTES.map { (palette, label) -> palette to stringResource(label) },
+            selected = settings.palette,
+            onSelect = { vm.setPalette(it) },
+            onDismiss = { picker = null },
+        )
         Picker.LANGUAGE -> ChoiceSheet(
             title = stringResource(R.string.settings_language),
             options = listOf<Pair<String?, String>>(null to stringResource(R.string.language_system)) + LANGUAGES,
@@ -237,7 +253,7 @@ fun SettingsScreen(
     }
 }
 
-private enum class Picker { THEME, LANGUAGE, INTERVAL }
+private enum class Picker { THEME, PALETTE, LANGUAGE, INTERVAL }
 
 private val UPDATE_HOURS = listOf(1, 3, 6, 12, 24)
 
@@ -250,8 +266,24 @@ private val THEMES = listOf(
     ThemeMode.DARK to R.string.theme_dark,
 )
 
+private val PALETTES = listOf(
+    Palette.CLASSIC to R.string.palette_classic,
+    Palette.WARM to R.string.palette_warm,
+)
+
 /** Language tags with names written in that language. */
-private val LANGUAGES = listOf("en" to "English", "ru" to "Русский")
+private val LANGUAGES = listOf(
+    "en" to "English",
+    "be" to "Беларуская",
+    "de" to "Deutsch",
+    "es" to "Español",
+    "fr" to "Français",
+    "it" to "Italiano",
+    "pl" to "Polski",
+    "ru" to "Русский",
+    "sr" to "Српски",
+    "he" to "עברית",
+)
 
 /** Single choice in a bottom sheet; the current option carries a check mark. */
 @Composable

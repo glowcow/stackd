@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_cards">Карты</string>
+    <string name="tab_search">Пошук</string>
+    <string name="tab_scanner">Сканер</string>
+    <string name="tab_settings">Налады</string>
+
+    <string name="filter_all">Усе</string>
+    <string name="filter_cards">Карты</string>
+    <string name="filter_tickets">Білеты</string>
+
+    <string name="kind_card">Карта</string>
+    <string name="kind_ticket">Білет</string>
+
+    <string name="add_card">Дадаць карту</string>
+    <string name="add_file">Файл .pkpass</string>
+    <string name="add_image">Выява штрыхкода з галерэі</string>
+    <string name="add_photo">Фота карты</string>
+    <string name="add_manual">Увесці нумар уручную</string>
+    <string name="add_scan">Сканаваць штрыхкод</string>
+    <string name="close">Закрыць</string>
+    <string name="cancel">Скасаваць</string>
+    <string name="save">Гатова</string>
+    <string name="delete">Выдаліць</string>
+    <string name="delete_title">Выдаліць «%1$s»?</string>
+    <string name="delete_text">Карта і яе файлы будуць выдалены з тэлефона.</string>
+
+    <string name="empty_title">Стос пусты</string>
+    <string name="empty_tickets_title">Білетаў пакуль няма</string>
+    <string name="empty_hint">Націсніце +, каб дадаць карту або файл .pkpass</string>
+
+    <string name="date_today">сёння, %1$s</string>
+    <string name="date_tomorrow">заўтра, %1$s</string>
+    <string name="date_yesterday">учора, %1$s</string>
+
+    <string name="action_share">Падзяліцца</string>
+    <string name="action_edit">Змяніць</string>
+    <string name="action_pin">Замацаваць</string>
+    <string name="action_unpin">Адмацаваць</string>
+    <string name="action_details">Падрабязней</string>
+    <string name="action_update">Абнавіць</string>
+    <string name="barcode_bright">%1$s · яркасць павышана аўтаматычна</string>
+    <string name="no_barcode">У гэтай карты няма штрыхкода</string>
+
+    <string name="info_last_used">Апошняе выкарыстанне</string>
+    <string name="info_added">Дададзена</string>
+    <string name="info_updated">Праверка абнаўленняў</string>
+    <string name="info_note">Нататка</string>
+
+    <string name="source_scan">сканаваннем камерай</string>
+    <string name="source_photo">з фота</string>
+    <string name="source_gallery">з галерэі</string>
+    <string name="source_manual">уручную</string>
+    <string name="source_pkpass">з .pkpass</string>
+
+    <string name="edit_new_title">Новая карта</string>
+    <string name="edit_title">Змяненне карты</string>
+    <string name="edit_name">Назва</string>
+    <string name="edit_name_placeholder">Назва</string>
+    <string name="edit_subtitle">Падзагаловак</string>
+    <string name="edit_subtitle_hint">Напрыклад, кавярня</string>
+    <string name="edit_number">Нумар карты</string>
+    <string name="edit_format">Фармат штрыхкода</string>
+    <string name="edit_format_auto">Аўта</string>
+    <string name="edit_color">Колер</string>
+
+    <string name="search_hint">Назва, нумар або нататка</string>
+    <string name="search_empty">Нічога не знойдзена</string>
+
+    <string name="scan_flash">Ліхтарык</string>
+    <string name="scan_hint_code">Навядзіце камеру на штрыхкод або QR-код — карта дадасца аўтаматычна</string>
+    <string name="scan_hint_photo">Сфатаграфуйце пярэдні бок карты — ён стане вокладкай</string>
+    <string name="scan_no_camera">Няма доступу да камеры</string>
+    <string name="scan_grant">Дазволіць камеру</string>
+    <string name="scan_shutter">Зняць</string>
+    <string name="scan_not_found">Штрыхкод не знойдзены</string>
+    <string name="scan_capture_failed">Не атрымалася зрабіць фота</string>
+
+    <string name="import_failed">Не атрымалася адкрыць файл .pkpass</string>
+    <string name="import_many">Дададзена карт: %1$d</string>
+    <string name="update_done">Пас абноўлены</string>
+    <string name="update_same">Змен няма</string>
+    <string name="update_failed">Не атрымалася абнавіць пас</string>
+    <string name="updates_channel">Абнаўленні пасаў</string>
+
+    <string name="settings_theme">Тэма</string>
+    <string name="theme_system">Як у сістэме</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Цёмная</string>
+    <string name="settings_palette">Каляровая схема</string>
+    <string name="palette_warm">Цёплая</string>
+    <string name="palette_classic">Класічная</string>
+    <string name="settings_language">Мова</string>
+    <string name="language_system">Як у сістэме</string>
+    <string name="settings_brightness">Максімальная яркасць</string>
+    <string name="settings_brightness_hint">Павышаць яркасць экрана, калі карта адкрыта</string>
+    <string name="settings_auto_update">Абнаўляць пасы аўтаматычна</string>
+    <string name="settings_auto_update_hint">Запытваць свежыя пасы ў выдаўцоў і паведамляць пра змены</string>
+    <string name="settings_update_interval">Інтэрвал праверкі</string>
+    <string name="settings_version">Версія</string>
+    <string name="settings_font">Шрыфт</string>
+    <string name="settings_app_update">Правяраць абнаўленні праграмы</string>
+    <string name="settings_app_update_hint">Раз на тыдзень, у рэлізах на GitHub</string>
+    <string name="app_update_channel">Абнаўленні праграмы</string>
+    <string name="app_update_available">Даступная версія %1$s</string>
+    <string name="app_update_tap">Націсніце, каб паглядзець, што новага, і ўсталяваць</string>
+    <string name="app_update_checking">Правяраем…</string>
+    <string name="app_update_latest">Гэта апошняя версія</string>
+    <string name="app_update_failed">Не атрымалася праверыць абнаўленні</string>
+    <string name="app_update_downloading">Спампоўванне… %1$d%%</string>
+    <string name="app_update_install">Спампаваць і ўсталяваць</string>
+    <string name="app_update_dev">Зборка для распрацоўкі, не абнаўляецца</string>
+
+    <plurals name="hours">
+        <item quantity="one">%d гадзіна</item>
+        <item quantity="few">%d гадзіны</item>
+        <item quantity="many">%d гадзін</item>
+        <item quantity="other">%d гадзіны</item>
+    </plurals>
+</resources>

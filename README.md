@@ -3,7 +3,16 @@
 Android wallet for Apple Wallet passes (`.pkpass`) and physical loyalty cards.
 Physical cards are added by scanning their barcode with the camera, from a
 photo, or by typing the number; passes arrive from mail, a browser or a file
-manager. Android 16+ only.
+manager. Android 16+ only. The interface speaks ten languages: English,
+Belarusian, French, German, Hebrew, Italian, Polish, Russian, Serbian and
+Spanish.
+
+<p>
+  <img src="docs/screenshots/stack.png" width="200" alt="The stack of cards">
+  <img src="docs/screenshots/open-card.png" width="200" alt="An open ticket with its barcode">
+  <img src="docs/screenshots/add.png" width="200" alt="The sheet with ways to add a card">
+  <img src="docs/screenshots/stack-dark.png" width="200" alt="The stack in the dark theme">
+</p>
 
 ## Contents
 
@@ -57,9 +66,12 @@ manager. Android 16+ only.
 - **Barcodes** are drawn with ZXing; while a card is open the screen stays on
   and its brightness goes to maximum (configurable). Share sends the original
   `.pkpass` or the number.
-- **Languages** — English (default) and Russian. Pick one in Settings or in
-  the system *Settings → Apps → Stackd → App language*; both share one value.
-- Search, light/dark/system theme.
+- **Languages** — English (default), Belarusian, German, Spanish, French,
+  Italian, Polish, Russian, Serbian (Cyrillic) and Hebrew (right-to-left). Pick one in Settings or in the
+  system *Settings → Apps → Stackd → App language*; both share one value.
+- **Look** — light, dark or system theme, and two colour schemes: the neutral
+  classic default with a blue accent and a warm one.
+- Search by name, number or note.
 
 ## Stack
 
@@ -154,10 +166,12 @@ uninstalled before installing a newer one.
 
 ## Design
 
-Mockups, palette and the launcher icon come from the `stackd-design` bundle.
-Palette: light `#FAF9F5` / dark `#1A1A18` backgrounds, accent `#D97757`,
-card colours `#6A9BCC #788C5D #CBCADB #E3DACC #BCD1CA #141413`. UI font:
-Instrument Sans.
+Mockups and the launcher icon come from the `stackd-design` bundle. The
+default *classic* scheme is neutral grey — light `#FAFAFA` / dark `#161616`
+backgrounds, accent `#1F6FEB`; the *warm* scheme of the original design has
+`#FAF9F5` / `#1A1A18` and accent `#D97757`. Card colours start from
+`#6A9BCC #788C5D #CBCADB #E3DACC #BCD1CA #141413`. UI font: Arimo, which
+covers every language of the app.
 
 ## License
 
@@ -168,5 +182,5 @@ As an additional permission under section 7 of the GPL, the app may be
 combined and distributed with Google's ML Kit barcode scanning library, which
 is not free software.
 
-Instrument Sans is bundled under the SIL Open Font License 1.1 — see
-[`licenses/InstrumentSans-OFL.txt`](licenses/InstrumentSans-OFL.txt).
+Arimo is bundled under the SIL Open Font License 1.1 — see
+[`licenses/Arimo-OFL.txt`](licenses/Arimo-OFL.txt).

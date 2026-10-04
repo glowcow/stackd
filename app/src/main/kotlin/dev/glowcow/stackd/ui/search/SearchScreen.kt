@@ -48,7 +48,7 @@ import dev.glowcow.stackd.ui.components.CardAvatar
 import dev.glowcow.stackd.ui.components.TopTab
 import dev.glowcow.stackd.ui.components.cardMeta
 import dev.glowcow.stackd.ui.components.kindLabel
-import dev.glowcow.stackd.ui.theme.InstrumentSans
+import dev.glowcow.stackd.ui.theme.AppFont
 import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.ui.theme.StackdTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -101,7 +101,7 @@ fun SearchScreen(
                     value = query,
                     onValueChange = { vm.query.value = it },
                     singleLine = true,
-                    textStyle = TextStyle(color = c.text, fontFamily = InstrumentSans, fontSize = 15.sp),
+                    textStyle = TextStyle(color = c.text, fontFamily = AppFont, fontSize = 15.sp),
                     cursorBrush = SolidColor(c.accent),
                     modifier = Modifier.fillMaxWidth().focusRequester(focus),
                 )

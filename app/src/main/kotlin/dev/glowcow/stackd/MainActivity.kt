@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         val settingsFlow = openSettings.receiveAsFlow()
         setContent {
             val settings by container.settings.settings.collectAsStateWithLifecycle(AppSettings())
-            StackdTheme(settings.theme) {
+            StackdTheme(settings.theme, settings.palette) {
                 StackdRoot(openCard = flow, openSettings = settingsFlow)
             }
         }
@@ -47,6 +47,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        // A recreated activity starts from this intent, not from the one that launched the task.
+        setIntent(intent)
         handled = null
         handleIntent(intent)
     }
