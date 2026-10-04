@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
     private val openCard = Channel<String>(Channel.BUFFERED)
+    private val openSettings = Channel<Unit>(Channel.BUFFERED)
     private var handled: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,10 +31,11 @@ class MainActivity : ComponentActivity() {
         handleIntent(intent)
 
         val flow = openCard.receiveAsFlow()
+        val settingsFlow = openSettings.receiveAsFlow()
         setContent {
             val settings by container.settings.settings.collectAsStateWithLifecycle(AppSettings())
             StackdTheme(settings.theme) {
-                StackdRoot(openCard = flow)
+                StackdRoot(openCard = flow, openSettings = settingsFlow)
             }
         }
     }
@@ -57,6 +59,15 @@ class MainActivity : ComponentActivity() {
             handled = "card:$id"
             return
         }
+        // A tap on the notification about a new app version: the settings show it.
+        intent?.getStringExtra(EXTRA_APP_UPDATE)?.let { version ->
+            if ("app:$version" != handled) {
+                openSettings.trySend(Unit)
+                container.appUpdater.checkNow()
+            }
+            handled = "app:$version"
+            return
+        }
         val uri = when (intent?.action) {
             Intent.ACTION_VIEW -> intent.data
             Intent.ACTION_SEND -> intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
@@ -76,6 +87,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         const val EXTRA_CARD_ID = "card_id"
+        const val EXTRA_APP_UPDATE = "app_update"
         private const val KEY_HANDLED = "handled_uri"
     }
 }

@@ -6,6 +6,8 @@ import dev.glowcow.stackd.data.CardRepository
 import dev.glowcow.stackd.data.SettingsStore
 import dev.glowcow.stackd.data.StackdDatabase
 import dev.glowcow.stackd.pkpass.PassImporter
+import dev.glowcow.stackd.update.AppUpdateScheduler
+import dev.glowcow.stackd.update.AppUpdater
 import dev.glowcow.stackd.update.PassUpdater
 import dev.glowcow.stackd.update.UpdateScheduler
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +24,7 @@ class AppContainer(context: Context) {
     val importer = PassImporter(context, cards)
     val updater = PassUpdater(cards, importer)
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    val appUpdater = AppUpdater(context, scope)
 }
 
 class StackdApp : Application() {
@@ -37,6 +40,10 @@ class StackdApp : Application() {
         container.scope.launch {
             container.settings.settings.map { it.autoUpdate to it.updateHours }.distinctUntilChanged()
                 .collect { (on, hours) -> UpdateScheduler.apply(this@StackdApp, on, hours) }
+        }
+        container.scope.launch {
+            container.settings.settings.map { it.appUpdate }.distinctUntilChanged()
+                .collect { AppUpdateScheduler.apply(this@StackdApp, it && container.appUpdater.supported) }
         }
     }
 }

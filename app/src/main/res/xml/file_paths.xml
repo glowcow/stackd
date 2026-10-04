@@ -2,4 +2,5 @@
 <paths>
     <files-path name="passes" path="passes/" />
     <cache-path name="share" path="share/" />
+    <cache-path name="update" path="update/" />
 </paths>

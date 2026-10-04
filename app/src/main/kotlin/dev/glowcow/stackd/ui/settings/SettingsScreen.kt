@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -48,29 +49,33 @@ import dev.glowcow.stackd.ui.components.GroupRow
 import dev.glowcow.stackd.ui.components.GroupSheet
 import dev.glowcow.stackd.ui.components.TopTab
 import dev.glowcow.stackd.ui.theme.StackdIcons
+import dev.glowcow.stackd.update.AppRelease
+import dev.glowcow.stackd.update.AppUpdateState
+import dev.glowcow.stackd.update.AppUpdater
 import dev.glowcow.stackd.ui.theme.StackdTheme
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(private val store: SettingsStore) : ViewModel() {
+class SettingsViewModel(private val store: SettingsStore, val updater: AppUpdater) : ViewModel() {
     val settings: StateFlow<AppSettings> = store.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
     fun setTheme(mode: ThemeMode) = viewModelScope.launch { store.setTheme(mode) }
     fun setMaxBrightness(on: Boolean) = viewModelScope.launch { store.setMaxBrightness(on) }
     fun setAutoUpdate(on: Boolean) = viewModelScope.launch { store.setAutoUpdate(on) }
     fun setUpdateHours(hours: Int) = viewModelScope.launch { store.setUpdateHours(hours) }
+    fun setAppUpdate(on: Boolean) = viewModelScope.launch { store.setAppUpdate(on) }
 }
 
 @Composable
 fun SettingsScreen(
     onTab: (TopTab) -> Unit,
-    vm: SettingsViewModel = viewModel { SettingsViewModel((this[APPLICATION_KEY] as StackdApp).container.settings) },
+    vm: SettingsViewModel = viewModel { (this[APPLICATION_KEY] as StackdApp).container.let { SettingsViewModel(it.settings, it.appUpdater) } },
 ) {
     val c = StackdTheme.colors
     val settings by vm.settings.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val version = remember(context) { context.packageManager.getPackageInfo(context.packageName, 0).versionName.orEmpty() }
+    val update by vm.updater.state.collectAsStateWithLifecycle()
     // The system keeps the per-app language, shared with Settings → Apps → App language.
     val locales = remember(context) { context.getSystemService(LocaleManager::class.java) }
     var language by remember { mutableStateOf(locales.applicationLocales.takeUnless { it.isEmpty }?.get(0)?.language) }
@@ -80,6 +85,11 @@ fun SettingsScreen(
         vm.setAutoUpdate(on)
         if (on) notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
+    fun setAppUpdate(on: Boolean) {
+        vm.setAppUpdate(on)
+        if (on) notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+    var release by remember { mutableStateOf<AppRelease?>(null) }
     var picker by rememberSaveable { mutableStateOf<Picker?>(null) }
     fun setLanguage(tag: String?) {
         language = tag
@@ -148,12 +158,57 @@ fun SettingsScreen(
                 }
             }
             Group {
-                GroupRow(stringResource(R.string.settings_version), value = version)
+                GroupRow(
+                    stringResource(R.string.settings_version),
+                    subtitle = when (val s = update) {
+                        AppUpdateState.Idle -> if (vm.updater.supported) null else stringResource(R.string.app_update_dev)
+                        AppUpdateState.Checking -> stringResource(R.string.app_update_checking)
+                        AppUpdateState.UpToDate -> stringResource(R.string.app_update_latest)
+                        AppUpdateState.Failed -> stringResource(R.string.app_update_failed)
+                        is AppUpdateState.Available -> stringResource(R.string.app_update_available, s.release.version)
+                        is AppUpdateState.Downloading -> stringResource(R.string.app_update_downloading, (s.progress * 100).toInt())
+                    },
+                    value = vm.updater.current,
+                    onClick = when (val s = update) {
+                        AppUpdateState.Checking, is AppUpdateState.Downloading -> null
+                        is AppUpdateState.Available -> ({ release = s.release })
+                        else -> if (vm.updater.supported) vm.updater::checkNow else null
+                    },
+                )
+                if (vm.updater.supported) {
+                    GroupDivider()
+                    GroupRow(
+                        stringResource(R.string.settings_app_update),
+                        subtitle = stringResource(R.string.settings_app_update_hint),
+                        onClick = { setAppUpdate(!settings.appUpdate) },
+                        trailing = {
+                            Switch(
+                                checked = settings.appUpdate,
+                                onCheckedChange = { setAppUpdate(it) },
+                                colors = SwitchDefaults.colors(checkedTrackColor = c.accent, uncheckedTrackColor = c.chip, uncheckedBorderColor = c.line),
+                            )
+                        },
+                    )
+                }
                 GroupDivider()
                 GroupRow(stringResource(R.string.settings_font), value = "Instrument Sans · SIL OFL 1.1")
             }
         }
         BottomBar(TopTab.SETTINGS, onTab)
+    }
+
+    release?.let { r ->
+        GroupSheet(stringResource(R.string.app_update_available, r.version), onDismiss = { release = null }) { pick ->
+            if (r.notes.isNotEmpty()) {
+                Text(
+                    r.notes,
+                    color = c.muted,
+                    fontSize = 14.sp,
+                    modifier = Modifier.heightIn(max = 280.dp).verticalScroll(rememberScrollState()).padding(start = 4.dp, end = 4.dp, bottom = 14.dp),
+                )
+            }
+            Group { GroupRow(stringResource(R.string.app_update_install), onClick = { pick { vm.updater.install(r) } }) }
+        }
     }
 
     when (picker) {

@@ -48,7 +48,12 @@ manager. Android 16+ only.
   open card, or automatically every 1–24 h (off by default, Settings) with a
   notification listing the changed fields. It is Apple's PassKit web service
   `GET …/v1/passes/{type}/{serial}`, https only; issuers cannot push to
-  Android, so the app polls. These requests are the only network traffic.
+  Android, so the app polls.
+- **App updates** — a tap on *Version* in Settings asks GitHub for the latest
+  release, shows what changed and can download the APK and pass it to the
+  system installer, which checks the signature and asks for confirmation. A
+  weekly background check with a notification is off by default. Pass
+  updates and this check are the only network traffic.
 - **Barcodes** are drawn with ZXing; while a card is open the screen stays on
   and its brightness goes to maximum (configurable). Share sends the original
   `.pkpass` or the number.
@@ -75,7 +80,8 @@ All versions live in [`gradle/libs.versions.toml`](gradle/libs.versions.toml).
 app/src/main/kotlin/dev/glowcow/stackd/
   barcode/   formats, ZXing renderer, ML Kit mapping and still-image scan
   pkpass/    .pkpass parser (pure JVM, unit-tested), .strings parser, importer
-  update/    pass refresh from the issuer, background job, notifications
+  update/    pass refresh from the issuer and app self-update, background
+             jobs, notifications
   data/      Room entity/DAO/database, repository, stack ordering, settings
   ui/        theme + icons, shared components, one package per screen
              (home/Wallet.kt: the deck, scrolling and the in-place open card)

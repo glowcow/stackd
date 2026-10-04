@@ -53,7 +53,7 @@ data class CardDraft(
 )
 
 @Composable
-fun StackdRoot(openCard: Flow<String>) {
+fun StackdRoot(openCard: Flow<String>, openSettings: Flow<Unit>) {
     val backStack = rememberNavBackStack(HomeRoute)
     // A card to open in the wallet on the home screen.
     var pendingOpen by rememberSaveable { mutableStateOf<String?>(null) }
@@ -76,6 +76,7 @@ fun StackdRoot(openCard: Flow<String>) {
     }
 
     LaunchedEffect(openCard) { openCard.collect(::showCard) }
+    LaunchedEffect(openSettings) { openSettings.collect { selectTab(TopTab.SETTINGS) } }
 
     // Status bar icons follow the theme, except over the always-dark scanner.
     val lightIcons = !StackdTheme.colors.isDark && backStack.lastOrNull() !is ScannerRoute

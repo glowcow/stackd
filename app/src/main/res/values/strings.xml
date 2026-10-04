@@ -98,6 +98,17 @@
     <string name="settings_update_interval">Check interval</string>
     <string name="settings_version">Version</string>
     <string name="settings_font">Font</string>
+    <string name="settings_app_update">Check for app updates</string>
+    <string name="settings_app_update_hint">Once a week, in the releases on GitHub</string>
+    <string name="app_update_channel">App updates</string>
+    <string name="app_update_available">Version %1$s is available</string>
+    <string name="app_update_tap">Tap to see what is new and install it</string>
+    <string name="app_update_checking">Checking…</string>
+    <string name="app_update_latest">This is the latest version</string>
+    <string name="app_update_failed">Couldn’t check for updates</string>
+    <string name="app_update_downloading">Downloading… %1$d%%</string>
+    <string name="app_update_install">Download and install</string>
+    <string name="app_update_dev">Development build, not updated</string>
 
     <plurals name="hours">
         <item quantity="one">%d hour</item>
