@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Stackd</string>
+
+    <string name="tab_cards">Cards</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_scanner">Scanner</string>
+    <string name="tab_settings">Settings</string>
+
+    <string name="filter_all">All</string>
+    <string name="filter_cards">Cards</string>
+    <string name="filter_tickets">Tickets</string>
+
+    <string name="kind_card">Card</string>
+    <string name="kind_ticket">Ticket</string>
+
+    <string name="add_card">Add card</string>
+    <string name="add_file">.pkpass file</string>
+    <string name="add_image">Barcode image from the gallery</string>
+    <string name="add_photo">Photo of the card</string>
+    <string name="add_manual">Enter the number manually</string>
+    <string name="add_scan">Scan a barcode</string>
+    <string name="close">Close</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Done</string>
+    <string name="delete">Delete</string>
+    <string name="delete_title">Delete “%1$s”?</string>
+    <string name="delete_text">The card and its files will be removed from the phone.</string>
+
+    <string name="empty_title">The stack is empty</string>
+    <string name="empty_tickets_title">No tickets yet</string>
+    <string name="empty_hint">Tap + to add a card or a .pkpass file</string>
+
+    <string name="date_today">today, %1$s</string>
+    <string name="date_tomorrow">tomorrow, %1$s</string>
+    <string name="date_yesterday">yesterday, %1$s</string>
+
+    <string name="action_share">Share</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_pin">Pin</string>
+    <string name="action_unpin">Unpin</string>
+    <string name="action_details">Details</string>
+    <string name="action_update">Update</string>
+    <string name="barcode_bright">%1$s · brightness raised automatically</string>
+    <string name="no_barcode">This card has no barcode</string>
+
+    <string name="info_last_used">Last used</string>
+    <string name="info_added">Added</string>
+    <string name="info_updated">Checked for updates</string>
+    <string name="info_note">Note</string>
+
+    <string name="source_scan">by camera scan</string>
+    <string name="source_photo">from a photo</string>
+    <string name="source_gallery">from the gallery</string>
+    <string name="source_manual">manually</string>
+    <string name="source_pkpass">from .pkpass</string>
+
+    <string name="edit_new_title">New card</string>
+    <string name="edit_title">Edit card</string>
+    <string name="edit_name">Name</string>
+    <string name="edit_name_placeholder">Name</string>
+    <string name="edit_subtitle">Subtitle</string>
+    <string name="edit_subtitle_hint">For example, a coffee shop</string>
+    <string name="edit_number">Card number</string>
+    <string name="edit_format">Barcode format</string>
+    <string name="edit_format_auto">Auto</string>
+    <string name="edit_color">Colour</string>
+
+    <string name="search_hint">Name, number or note</string>
+    <string name="search_empty">Nothing found</string>
+
+    <string name="scan_flash">Flash</string>
+    <string name="scan_hint_code">Point the camera at a barcode or QR code — the card is added automatically</string>
+    <string name="scan_hint_photo">Take a photo of the card front — it becomes the cover</string>
+    <string name="scan_no_camera">No camera access</string>
+    <string name="scan_grant">Allow camera</string>
+    <string name="scan_shutter">Shoot</string>
+    <string name="scan_not_found">No barcode found</string>
+    <string name="scan_capture_failed">Couldn’t take the photo</string>
+
+    <string name="import_failed">Couldn’t open the .pkpass file</string>
+    <string name="import_many">Cards added: %1$d</string>
+    <string name="update_done">The pass was updated</string>
+    <string name="update_same">No changes</string>
+    <string name="update_failed">Couldn’t update the pass</string>
+    <string name="updates_channel">Pass updates</string>
+
+    <string name="settings_theme">Theme</string>
+    <string name="theme_system">System default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="settings_language">Language</string>
+    <string name="language_system">System default</string>
+    <string name="settings_brightness">Maximum brightness</string>
+    <string name="settings_brightness_hint">Raise screen brightness while a card is open</string>
+    <string name="settings_auto_update">Update passes automatically</string>
+    <string name="settings_auto_update_hint">Ask the issuers for fresh passes and notify about changes</string>
+    <string name="settings_update_interval">Check interval</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_font">Font</string>
+
+    <plurals name="hours">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+</resources>

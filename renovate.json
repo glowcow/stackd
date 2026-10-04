@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>g_prjcts/ci-templates//renovate/default"],
+  "enabledManagers": ["gradle", "gradle-wrapper"],
+
+  "packageRules": [
+    {
+      "description": "Kotlin, its compiler plugins and KSP move together.",
+      "matchPackageNames": ["org.jetbrains.kotlin{/,}**", "com.google.devtools.ksp{/,}**"],
+      "groupName": "kotlin"
+    },
+    {
+      "description": "Only stable releases: no alpha/beta/rc/dev builds.",
+      "matchDatasources": ["maven"],
+      "allowedVersions": "!/(alpha|beta|rc|dev|M\\d)/i"
+    }
+  ]
+}

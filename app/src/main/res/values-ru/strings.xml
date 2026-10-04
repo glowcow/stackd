@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_cards">Карты</string>
+    <string name="tab_search">Поиск</string>
+    <string name="tab_scanner">Сканер</string>
+    <string name="tab_settings">Настройки</string>
+
+    <string name="filter_all">Все</string>
+    <string name="filter_cards">Карты</string>
+    <string name="filter_tickets">Билеты</string>
+
+    <string name="kind_card">Карта</string>
+    <string name="kind_ticket">Билет</string>
+
+    <string name="add_card">Добавить карту</string>
+    <string name="add_file">Файл .pkpass</string>
+    <string name="add_image">Картинка со штрихкодом из галереи</string>
+    <string name="add_photo">Фото карты</string>
+    <string name="add_manual">Ввести номер вручную</string>
+    <string name="add_scan">Сканировать штрихкод</string>
+    <string name="close">Закрыть</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Готово</string>
+    <string name="delete">Удалить</string>
+    <string name="delete_title">Удалить «%1$s»?</string>
+    <string name="delete_text">Карта и её файлы будут удалены с телефона.</string>
+
+    <string name="empty_title">Стопка пока пустая</string>
+    <string name="empty_tickets_title">Билетов пока нет</string>
+    <string name="empty_hint">Нажми +, чтобы добавить карту или файл .pkpass</string>
+
+    <string name="date_today">сегодня, %1$s</string>
+    <string name="date_tomorrow">завтра, %1$s</string>
+    <string name="date_yesterday">вчера, %1$s</string>
+
+    <string name="action_share">Поделиться</string>
+    <string name="action_edit">Изменить</string>
+    <string name="action_pin">Закрепить</string>
+    <string name="action_unpin">Открепить</string>
+    <string name="action_details">Подробнее</string>
+    <string name="action_update">Обновить</string>
+    <string name="barcode_bright">%1$s · яркость поднята автоматически</string>
+    <string name="no_barcode">У этой карты нет штрихкода</string>
+
+    <string name="info_last_used">Последнее использование</string>
+    <string name="info_added">Добавлена</string>
+    <string name="info_updated">Проверка обновлений</string>
+    <string name="info_note">Заметка</string>
+
+    <string name="source_scan">сканом камеры</string>
+    <string name="source_photo">по фото</string>
+    <string name="source_gallery">из галереи</string>
+    <string name="source_manual">вручную</string>
+    <string name="source_pkpass">из .pkpass</string>
+
+    <string name="edit_new_title">Новая карта</string>
+    <string name="edit_title">Изменить карту</string>
+    <string name="edit_name">Название</string>
+    <string name="edit_name_placeholder">Название</string>
+    <string name="edit_subtitle">Подпись</string>
+    <string name="edit_subtitle_hint">Например, кофейня</string>
+    <string name="edit_number">Номер карты</string>
+    <string name="edit_format">Формат штрихкода</string>
+    <string name="edit_format_auto">Авто</string>
+    <string name="edit_color">Цвет</string>
+
+    <string name="search_hint">Название, номер или заметка</string>
+    <string name="search_empty">Ничего не нашлось</string>
+
+    <string name="scan_flash">Вспышка</string>
+    <string name="scan_hint_code">Наведи камеру на штрихкод или QR — карта добавится сама</string>
+    <string name="scan_hint_photo">Сними лицевую сторону карты — фото станет обложкой</string>
+    <string name="scan_no_camera">Нет доступа к камере</string>
+    <string name="scan_grant">Разрешить камеру</string>
+    <string name="scan_shutter">Снять</string>
+    <string name="scan_not_found">Штрихкод не найден</string>
+    <string name="scan_capture_failed">Не получилось сделать снимок</string>
+
+    <string name="import_failed">Не получилось открыть файл .pkpass</string>
+    <string name="import_many">Добавлено карт: %1$d</string>
+    <string name="update_done">Пасс обновлён</string>
+    <string name="update_same">Изменений нет</string>
+    <string name="update_failed">Не получилось обновить пасс</string>
+    <string name="updates_channel">Обновления пассов</string>
+
+    <string name="settings_theme">Тема</string>
+    <string name="theme_system">Как в системе</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="settings_language">Язык</string>
+    <string name="language_system">Как в системе</string>
+    <string name="settings_brightness">Максимальная яркость</string>
+    <string name="settings_brightness_hint">Поднимать яркость экрана, когда открыта карта</string>
+    <string name="settings_auto_update">Обновлять пассы автоматически</string>
+    <string name="settings_auto_update_hint">Запрашивать свежие пассы у издателей и уведомлять об изменениях</string>
+    <string name="settings_update_interval">Интервал проверки</string>
+    <string name="settings_version">Версия</string>
+    <string name="settings_font">Шрифт</string>
+
+    <plurals name="hours">
+        <item quantity="one">%d час</item>
+        <item quantity="few">%d часа</item>
+        <item quantity="many">%d часов</item>
+        <item quantity="other">%d часа</item>
+    </plurals>
+</resources>
