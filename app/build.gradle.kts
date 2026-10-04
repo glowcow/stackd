@@ -8,6 +8,8 @@ plugins {
 
 // Release version comes from the git tag (vX.Y.Z) via -PappVersion; X.Y.Z → X*10000+Y*100+Z.
 val appVersion = (findProperty("appVersion") as String?)?.removePrefix("v") ?: "0.0.1"
+// A branch build in CI shows its commit hash instead, via -PappVersionName.
+val appVersionName = findProperty("appVersionName") as String? ?: appVersion
 val appVersionCode = appVersion.split(".").map { it.toInt() }.let { (x, y, z) -> x * 10000 + y * 100 + z }
 
 android {
@@ -20,7 +22,7 @@ android {
         minSdk = 36
         targetSdk = 37
         versionCode = appVersionCode
-        versionName = appVersion
+        versionName = appVersionName
     }
 
     // One APK per ABI: arm64-v8a for phones, x86_64 for the emulator.

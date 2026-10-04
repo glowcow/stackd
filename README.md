@@ -13,9 +13,7 @@ manager. Android 16+ only.
 - [Build](#build)
   - [Local build in Docker](#local-build-in-docker)
   - [Install on a phone](#install-on-a-phone)
-- [Release](#release)
-  - [Signing](#signing)
-- [Dependency updates](#dependency-updates)
+- [Download](#download)
 - [Design](#design)
 - [License](#license)
 
@@ -87,10 +85,10 @@ app/src/test/  parser and format tests
 ## Build
 
 The host needs only Docker: JDK, Android SDK and the Gradle distribution live
-in the `glowcow/android-sdk` image (recipe in `glowcow/docker`,
-`dockerfiles/android-sdk`; tag = `<build-tools>-gradle<gradle>`), so a build
-downloads only the app's own dependencies. Keep the tag in step with
-`buildToolsVersion` and the Gradle wrapper.
+in the `glowcow/android-sdk` image on Docker Hub (tag =
+`<build-tools>-gradle<gradle>`), so a build downloads only the app's own
+dependencies. Keep the tag in step with `buildToolsVersion` and the Gradle
+wrapper.
 The build runs as `linux/amd64` (Google ships `aapt2` for x86-64 Linux only).
 On Apple Silicon turn on *Use Rosetta for x86_64/amd64 emulation* in Docker
 Desktop and give the VM ~12 GB of memory: a warm debug build then takes
@@ -108,7 +106,7 @@ RUN="docker run --rm --platform linux/amd64 -v $PWD:/src -v stackd-gradle:/root/
 # debug APKs + unit tests
 $RUN ./gradlew testDebugUnitTest assembleDebug
 
-# lint + release APKs (unsigned without the ANDROID_* signing variables)
+# lint + release APKs, unsigned; -PappVersion sets the version
 $RUN ./gradlew -PappVersion=0.1.0 lintRelease assembleRelease
 ```
 
@@ -133,54 +131,20 @@ The same container reads crashes (`adb logcat -b crash -d`) and frame stats
 (`adb shell dumpsys gfxinfo <package>`). Judge animations on a release (R8)
 build: debug Compose is several times slower.
 
-## Release
+## Download
 
-The pipeline is the shared `android` entry point of **g_prjcts/ci-templates**;
-`.gitlab-ci.yml` here is the `include:` and two variables. Every push to
-`main` runs `android-lint` (`lintRelease`), `android-test` (unit tests) and
-`android-build` (signed release APKs per ABI), each straight in the toolchain
-image; the jobs stop if the Gradle wrapper or `buildToolsVersion` differ from
-what the image carries. Dependencies and the Gradle build cache travel between
-the jobs in the runner cache.
+Signed APKs are attached to every
+[release](https://github.com/glowcow/stackd/releases). Phones take
+`stackd-<version>-arm64-v8a-release.apk`; the `x86_64` one is for the
+emulator. There is no store listing: allow your browser or file manager to
+install apps, then open the file.
 
-Push a `vX.Y.Z` tag to release: `android-build` names the APKs
-`stackd-<version>-<abi>-release.apk`, `gitlab-release` uploads them with the R8
-`mapping.txt` to the project's generic package registry and creates a GitLab
-release linking them, `publish-github` pushes a source snapshot of the tag to
-the public showcase [`glowcow/stackd`](https://github.com/glowcow/stackd) and
-attaches the APKs to a GitHub release, and `publish-nas` copies the phone APK
-to the `Android` dataset of the NAS. Retrace a release stack trace with
-`retrace <mapping.txt> <trace.txt>` from the SDK image. `versionCode` is
-derived from the tag: `X*10000 + Y*100 + Z`.
-
-### Signing
-
-One release key signs every glowcow Android app. It lives in Infisical
-(`CI/CD` → `/android-signing`) and reaches this project as protected CI
-variables through a Secret Sync:
-
-| Variable | Content |
-|---|---|
-| `ANDROID_KEYSTORE_B64` | base64 of the PKCS12 keystore |
-| `ANDROID_KEYSTORE_PASSWORD` | keystore password |
-| `ANDROID_KEY_ALIAS` | key alias |
-| `ANDROID_KEY_PASSWORD` | key password |
-
-The `build` job writes the keystore to a temporary file and Gradle reads the
-rest from the environment; it refuses to run without the keystore. A local
-`assembleRelease` without these variables produces unsigned APKs.
-
-Certificate: `CN=Anton Sediuk, O=glowcow`, SHA-256
+Releases are signed with the certificate `CN=Anton Sediuk, O=glowcow`,
+SHA-256
 `7E:63:EC:86:6B:13:A8:23:B4:1B:4F:07:05:75:50:13:8F:B6:65:C3:50:B8:0D:41:CF:CF:B2:19:CB:98:C5:67`.
-Releases up to v0.3.2 were signed with an earlier key and cannot be updated
-in place.
-
-## Dependency updates
-
-Renovate runs for the whole group from the pipeline of `g_prjcts/ci-templates`;
-`renovate.json` here extends its shared preset. It covers the Gradle version
-catalog and the Gradle wrapper; the toolchain image pin lives in the templates. Only stable releases are
-proposed; Kotlin and KSP are grouped.
+Check a downloaded file with `apksigner verify --print-certs <file>.apk`.
+Versions up to 0.3.2 were signed with an earlier key and have to be
+uninstalled before installing a newer one.
 
 ## Design
 

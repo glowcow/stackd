@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
@@ -285,8 +284,12 @@ private fun WalletCard(
     onClick: () -> Unit,
 ) {
     Box(
+        // The card at the back of a stack is flat until it opens.
         Modifier
-            .shadow(if (back) 0.dp else 6.dp, CardShape, clip = false)
+            .graphicsLayer {
+                shadowElevation = 6.dp.toPx() * if (!back) 1f else if (open) progress() else 0f
+                shape = CardShape
+            }
             .then(
                 if (open) {
                     // Clip outside the size change, so the card is cut at its current height, not its full one.
@@ -306,6 +309,8 @@ private fun WalletCard(
                     Modifier
                 },
             ),
+        // The open card fills the face height when its own content is shorter.
+        propagateMinConstraints = true,
     ) {
         if (open) OpenCard(card, bright)
         CardFace(
