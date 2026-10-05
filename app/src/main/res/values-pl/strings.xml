@@ -96,6 +96,8 @@
     <string name="settings_brightness_hint">Podnoś jasność ekranu, gdy karta jest otwarta</string>
     <string name="settings_auto_update">Aktualizuj karty automatycznie</string>
     <string name="settings_auto_update_hint">Pobieraj świeże karty od wystawców i powiadamiaj o zmianach</string>
+    <string name="settings_notify_all">Powiadamiaj o każdej zmianie</string>
+    <string name="settings_notify_all_hint">Nie tylko o polach oznaczonych przez wystawcę</string>
     <string name="settings_update_interval">Częstotliwość sprawdzania</string>
     <string name="settings_version">Wersja</string>
     <string name="settings_font">Czcionka</string>

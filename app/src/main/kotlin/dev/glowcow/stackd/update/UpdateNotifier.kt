@@ -9,12 +9,13 @@ import android.content.Intent
 import dev.glowcow.stackd.MainActivity
 import dev.glowcow.stackd.R
 
-/** One notification per updated pass, listing what changed; a tap opens the card. */
+/** One notification per pass with changes worth reporting; a tap opens the card. */
 object UpdateNotifier {
     private const val CHANNEL = "pass_updates"
     private const val MAX_LINES = 4
 
-    fun notify(context: Context, changes: List<PassChange>) {
+    /** [all] adds the changes the issuer did not ask to announce. */
+    fun notify(context: Context, changes: List<PassChange>, all: Boolean) {
         if (changes.isEmpty()) return
         val manager = context.getSystemService(NotificationManager::class.java)
         if (!manager.areNotificationsEnabled()) return
@@ -22,8 +23,10 @@ object UpdateNotifier {
             NotificationChannel(CHANNEL, context.getString(R.string.updates_channel), NotificationManager.IMPORTANCE_DEFAULT),
         )
         for (change in changes) {
+            val lines = if (all) change.announced + change.other else change.announced
+            if (lines.isEmpty()) continue
             val id = change.card.id.hashCode()
-            val text = change.lines.take(MAX_LINES).joinToString("\n").ifEmpty { context.getString(R.string.update_done) }
+            val text = lines.take(MAX_LINES).joinToString("\n")
             val open = PendingIntent.getActivity(
                 context,
                 id,

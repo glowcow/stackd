@@ -96,6 +96,8 @@
     <string name="settings_brightness_hint">Subir el brillo de la pantalla mientras hay una tarjeta abierta</string>
     <string name="settings_auto_update">Actualizar los pases automáticamente</string>
     <string name="settings_auto_update_hint">Pedir pases nuevos a los emisores y avisar de los cambios</string>
+    <string name="settings_notify_all">Avisar de cualquier cambio</string>
+    <string name="settings_notify_all_hint">No solo de los campos que marca el emisor</string>
     <string name="settings_update_interval">Intervalo de comprobación</string>
     <string name="settings_version">Versión</string>
     <string name="settings_font">Fuente</string>

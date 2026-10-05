@@ -98,6 +98,8 @@
     <string name="settings_brightness_hint">Raise screen brightness while a card is open</string>
     <string name="settings_auto_update">Update passes automatically</string>
     <string name="settings_auto_update_hint">Ask the issuers for fresh passes and notify about changes</string>
+    <string name="settings_notify_all">Notify about any change</string>
+    <string name="settings_notify_all_hint">Not only about the fields the issuer marks for it</string>
     <string name="settings_update_interval">Check interval</string>
     <string name="settings_version">Version</string>
     <string name="settings_font">Font</string>

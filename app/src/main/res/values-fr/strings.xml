@@ -96,6 +96,8 @@
     <string name="settings_brightness_hint">Augmenter la luminosité de l’écran quand une carte est ouverte</string>
     <string name="settings_auto_update">Mettre à jour les pass automatiquement</string>
     <string name="settings_auto_update_hint">Demander des pass à jour aux émetteurs et signaler les changements</string>
+    <string name="settings_notify_all">Signaler tout changement</string>
+    <string name="settings_notify_all_hint">Pas seulement les champs marqués par l’émetteur</string>
     <string name="settings_update_interval">Intervalle de vérification</string>
     <string name="settings_version">Version</string>
     <string name="settings_font">Police</string>

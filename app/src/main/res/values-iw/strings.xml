@@ -96,6 +96,8 @@
     <string name="settings_brightness_hint">הגברת בהירות המסך כשכרטיס פתוח</string>
     <string name="settings_auto_update">עדכון כרטיסים אוטומטי</string>
     <string name="settings_auto_update_hint">בקשת כרטיסים עדכניים מהמנפיקים והתראה על שינויים</string>
+    <string name="settings_notify_all">התראה על כל שינוי</string>
+    <string name="settings_notify_all_hint">לא רק על השדות שהמנפיק סימן</string>
     <string name="settings_update_interval">תדירות הבדיקה</string>
     <string name="settings_version">גרסה</string>
     <string name="settings_font">גופן</string>

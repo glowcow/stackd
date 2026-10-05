@@ -54,8 +54,10 @@ Spanish.
   signature is not verified — passes are only displayed.
 - **Pass updates** — a pass that names a web service (`webServiceURL` +
   `authenticationToken`) can be refreshed: the *Update* button under the
-  open card, or automatically every 1–24 h (off by default, Settings) with a
-  notification listing the changed fields. It is Apple's PassKit web service
+  open card, or automatically every 1–24 h (off by default, Settings). A
+  notification comes for the fields the issuer marks with `changeMessage`,
+  as iOS does; *Notify about any change* adds the other fields on the front,
+  dates aside. It is Apple's PassKit web service
   `GET …/v1/passes/{type}/{serial}`, https only; issuers cannot push to
   Android, so the app polls.
 - **App updates** — a tap on *Version* in Settings asks GitHub for the latest

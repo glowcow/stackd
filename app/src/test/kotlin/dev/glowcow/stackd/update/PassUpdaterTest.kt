@@ -22,17 +22,32 @@ class PassUpdaterTest {
     )
 
     @Test
-    fun listsChangedAndNewFields() {
+    fun splitsAnnouncedChangesFromTheRest() {
         val old = card(
-            PassField(FieldSection.HEADER, "balance", "Balance", "120"),
+            PassField(FieldSection.HEADER, "balance", "Balance", "120", changeMessage = "Your balance is now %@"),
             PassField(FieldSection.SECONDARY, "level", "Level", "Gold"),
+            PassField(FieldSection.SECONDARY, "tier", "Tier", "1"),
+            PassField(FieldSection.AUXILIARY, "asOf", "As of", "04.10.2026", isDate = true),
+            PassField(FieldSection.BACK, "terms", "Terms", "v1"),
         )
         val new = card(
-            PassField(FieldSection.HEADER, "balance", "Balance", "150"),
+            PassField(FieldSection.HEADER, "balance", "Balance", "150", changeMessage = "Your balance is now %@"),
             PassField(FieldSection.SECONDARY, "level", "Level", "Gold"),
-            PassField(FieldSection.BACK, "promo", null, "Free cup on Friday"),
+            PassField(FieldSection.SECONDARY, "tier", "Tier", "2"),
+            PassField(FieldSection.AUXILIARY, "asOf", "As of", "05.10.2026", isDate = true),
+            PassField(FieldSection.AUXILIARY, "promo", null, "Free cup on Friday"),
+            PassField(FieldSection.BACK, "terms", "Terms", "v2"),
         )
-        assertEquals(listOf("Balance: 150", "Free cup on Friday"), PassUpdater.changedLines(old, new))
-        assertEquals(emptyList<String>(), PassUpdater.changedLines(new, new))
+        val change = PassUpdater.change(old, new)
+        assertEquals(listOf("Your balance is now 150"), change.announced)
+        assertEquals(listOf("Tier: 1 → 2", "Free cup on Friday"), change.other)
+    }
+
+    @Test
+    fun reportsNothingForTheSamePass() {
+        val pass = card(PassField(FieldSection.HEADER, "balance", "Balance", "120", changeMessage = "Balance: %@"))
+        val change = PassUpdater.change(pass, pass)
+        assertEquals(emptyList<String>(), change.announced)
+        assertEquals(emptyList<String>(), change.other)
     }
 }

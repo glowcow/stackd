@@ -96,6 +96,8 @@
     <string name="settings_brightness_hint">Појачај осветљеност екрана док је картица отворена</string>
     <string name="settings_auto_update">Аутоматски ажурирај пропуснице</string>
     <string name="settings_auto_update_hint">Тражи свеже пропуснице од издавалаца и обавести о променама</string>
+    <string name="settings_notify_all">Обавести о свакој промени</string>
+    <string name="settings_notify_all_hint">Не само о пољима која је означио издавалац</string>
     <string name="settings_update_interval">Интервал провере</string>
     <string name="settings_version">Верзија</string>
     <string name="settings_font">Фонт</string>

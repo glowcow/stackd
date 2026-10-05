@@ -96,6 +96,8 @@
     <string name="settings_brightness_hint">Bildschirmhelligkeit erhöhen, solange eine Karte geöffnet ist</string>
     <string name="settings_auto_update">Pässe automatisch aktualisieren</string>
     <string name="settings_auto_update_hint">Aussteller nach neuen Pässen fragen und über Änderungen benachrichtigen</string>
+    <string name="settings_notify_all">Über jede Änderung benachrichtigen</string>
+    <string name="settings_notify_all_hint">Nicht nur über die vom Aussteller markierten Felder</string>
     <string name="settings_update_interval">Prüfintervall</string>
     <string name="settings_version">Version</string>
     <string name="settings_font">Schrift</string>

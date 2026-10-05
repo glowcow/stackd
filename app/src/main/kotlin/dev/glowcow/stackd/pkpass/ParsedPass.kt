@@ -20,6 +20,10 @@ data class PassField(
     val key: String,
     val label: String? = null,
     val value: String,
+    /** The issuer's text for a notification about a new value, with `%@` in its place. */
+    val changeMessage: String? = null,
+    /** The value is a date or a time. */
+    val isDate: Boolean = false,
 )
 
 data class PassBarcode(

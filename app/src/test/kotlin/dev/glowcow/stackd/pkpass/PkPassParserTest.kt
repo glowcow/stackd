@@ -101,6 +101,22 @@ class PkPassParserTest {
     }
 
     @Test
+    fun keepsChangeMessagesAndMarksDates() {
+        val json = """
+            {"passTypeIdentifier":"pass.shop","serialNumber":"1","organizationName":"Shop",
+             "storeCard":{"headerFields":[{"key":"b","label":"Points","value":"120","changeMessage":"You have %@ points"}],
+                          "secondaryFields":[{"key":"asOf","label":"As of","value":"05.10.2026"},
+                                             {"key":"until","label":"Until","value":"2026-10-12T13:40+03:00","dateStyle":"PKDateStyleShort"},
+                                             {"key":"n","label":"Number","value":"12.5"}]}}
+        """.trimIndent().toByteArray()
+        val pass = parser.parse(zip("pass.json" to json).inputStream()).single()
+
+        assertEquals("You have %@ points", pass.fields(FieldSection.HEADER).single().changeMessage)
+        assertEquals(listOf(true, true, false), pass.fields(FieldSection.SECONDARY).map { it.isDate })
+        assertNull(pass.fields(FieldSection.SECONDARY).first().changeMessage)
+    }
+
+    @Test
     fun acceptsTrailingCommasAndComments() {
         val json = """
             {"passTypeIdentifier":"pass.shop","serialNumber":"2", // issuer comment

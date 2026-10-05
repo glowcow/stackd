@@ -66,6 +66,7 @@ class SettingsViewModel(private val store: SettingsStore, val updater: AppUpdate
     fun setMaxBrightness(on: Boolean) = viewModelScope.launch { store.setMaxBrightness(on) }
     fun setAutoUpdate(on: Boolean) = viewModelScope.launch { store.setAutoUpdate(on) }
     fun setUpdateHours(hours: Int) = viewModelScope.launch { store.setUpdateHours(hours) }
+    fun setNotifyAllChanges(on: Boolean) = viewModelScope.launch { store.setNotifyAllChanges(on) }
     fun setAppUpdate(on: Boolean) = viewModelScope.launch { store.setAppUpdate(on) }
 }
 
@@ -163,6 +164,19 @@ fun SettingsScreen(
                         stringResource(R.string.settings_update_interval),
                         value = hoursLabel(settings.updateHours),
                         onClick = { picker = Picker.INTERVAL },
+                    )
+                    GroupDivider()
+                    GroupRow(
+                        stringResource(R.string.settings_notify_all),
+                        subtitle = stringResource(R.string.settings_notify_all_hint),
+                        onClick = { vm.setNotifyAllChanges(!settings.notifyAllChanges) },
+                        trailing = {
+                            Switch(
+                                checked = settings.notifyAllChanges,
+                                onCheckedChange = { vm.setNotifyAllChanges(it) },
+                                colors = SwitchDefaults.colors(checkedTrackColor = c.accent, uncheckedTrackColor = c.chip, uncheckedBorderColor = c.line),
+                            )
+                        },
                     )
                 }
             }

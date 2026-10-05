@@ -96,6 +96,8 @@
     <string name="settings_brightness_hint">Поднимать яркость экрана, когда открыта карта</string>
     <string name="settings_auto_update">Обновлять пассы автоматически</string>
     <string name="settings_auto_update_hint">Запрашивать свежие пассы у издателей и уведомлять об изменениях</string>
+    <string name="settings_notify_all">Уведомлять о любых изменениях</string>
+    <string name="settings_notify_all_hint">Не только о полях, которые отметил издатель</string>
     <string name="settings_update_interval">Интервал проверки</string>
     <string name="settings_version">Версия</string>
     <string name="settings_font">Шрифт</string>

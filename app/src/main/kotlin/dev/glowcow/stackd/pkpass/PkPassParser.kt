@@ -155,15 +155,23 @@ class PkPassParser(
     private fun parseField(section: FieldSection, f: JsonObject, loc: (String?) -> String?): PassField? {
         val key = f.string("key") ?: return null
         val prim = (f["attributedValue"] ?: f["value"]) as? JsonPrimitive ?: return null
+        val styled = f.string("dateStyle") != null || f.string("timeStyle") != null
         val value = when {
             !prim.isString && prim.doubleOrNull != null -> formatNumber(prim.doubleOrNull!!, f)
             else -> {
                 val s = loc(prim.content)!!.stripTags()
-                if (f.string("dateStyle") != null || f.string("timeStyle") != null) formatDate(s, f) ?: s else s
+                if (styled) formatDate(s, f) ?: s else s
             }
         }
         if (value.isBlank()) return null
-        return PassField(section, key, loc(f.string("label"))?.takeIf { it.isNotBlank() }, value)
+        return PassField(
+            section,
+            key,
+            loc(f.string("label"))?.takeIf { it.isNotBlank() },
+            value,
+            loc(f.string("changeMessage"))?.takeIf { it.isNotBlank() },
+            styled || PLAIN_DATE.matches(value),
+        )
     }
 
     private fun formatNumber(n: Double, f: JsonObject): String {
@@ -209,6 +217,9 @@ class PkPassParser(
         private const val MAX_ARCHIVE_BYTES = 20L * 1024 * 1024
         private const val MAX_UNPACKED_BYTES = 60L * 1024 * 1024
         private const val MAX_ENTRIES = 500
+
+        /** A date an issuer wrote as plain text: 05.10.2026, 2026-10-05 14:30. */
+        private val PLAIN_DATE = Regex("""\d{1,4}[./-]\d{1,2}[./-]\d{1,4}(,?\s+\d{1,2}:\d{2}(:\d{2})?)?""")
 
         private val SECTIONS = listOf(
             FieldSection.HEADER to "headerFields",

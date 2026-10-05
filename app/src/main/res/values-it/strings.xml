@@ -96,6 +96,8 @@
     <string name="settings_brightness_hint">Aumenta la luminosità dello schermo mentre una carta è aperta</string>
     <string name="settings_auto_update">Aggiorna i pass automaticamente</string>
     <string name="settings_auto_update_hint">Chiede i pass aggiornati agli emittenti e avvisa delle modifiche</string>
+    <string name="settings_notify_all">Avvisa di ogni modifica</string>
+    <string name="settings_notify_all_hint">Non solo dei campi indicati dall’emittente</string>
     <string name="settings_update_interval">Intervallo di controllo</string>
     <string name="settings_version">Versione</string>
     <string name="settings_font">Carattere</string>

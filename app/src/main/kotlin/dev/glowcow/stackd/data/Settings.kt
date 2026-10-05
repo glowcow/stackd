@@ -21,6 +21,8 @@ data class AppSettings(
     /** Fetch fresh copies of the passes in the background, every [updateHours]. */
     val autoUpdate: Boolean = false,
     val updateHours: Int = 6,
+    /** Notify about every changed field, not only the ones the issuer marks for it. */
+    val notifyAllChanges: Boolean = false,
     /** Look for a new version of the app once a week. */
     val appUpdate: Boolean = false,
 )
@@ -33,6 +35,7 @@ class SettingsStore(private val context: Context) {
     private val brightnessKey = booleanPreferencesKey("max_brightness")
     private val autoUpdateKey = booleanPreferencesKey("auto_update")
     private val updateHoursKey = intPreferencesKey("update_hours")
+    private val notifyAllKey = booleanPreferencesKey("notify_all_changes")
     private val appUpdateKey = booleanPreferencesKey("app_update")
 
     val settings: Flow<AppSettings> = context.dataStore.data.map { p ->
@@ -42,6 +45,7 @@ class SettingsStore(private val context: Context) {
             maxBrightness = p[brightnessKey] ?: true,
             autoUpdate = p[autoUpdateKey] ?: false,
             updateHours = p[updateHoursKey] ?: 6,
+            notifyAllChanges = p[notifyAllKey] ?: false,
             appUpdate = p[appUpdateKey] ?: false,
         )
     }
@@ -55,6 +59,8 @@ class SettingsStore(private val context: Context) {
     suspend fun setAutoUpdate(on: Boolean) = context.dataStore.edit { it[autoUpdateKey] = on }
 
     suspend fun setUpdateHours(hours: Int) = context.dataStore.edit { it[updateHoursKey] = hours }
+
+    suspend fun setNotifyAllChanges(on: Boolean) = context.dataStore.edit { it[notifyAllKey] = on }
 
     suspend fun setAppUpdate(on: Boolean) = context.dataStore.edit { it[appUpdateKey] = on }
 

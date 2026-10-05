@@ -2,6 +2,7 @@ package dev.glowcow.stackd.update
 
 import dev.glowcow.stackd.data.Card
 import dev.glowcow.stackd.data.CardRepository
+import dev.glowcow.stackd.pkpass.FieldSection
 import dev.glowcow.stackd.pkpass.PassImporter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -10,8 +11,11 @@ import java.net.URI
 import java.net.URLEncoder
 import javax.net.ssl.HttpsURLConnection
 
-/** An updated pass and its changed fields, each as `label: value`. */
-class PassChange(val card: Card, val lines: List<String>)
+/**
+ * An updated pass: [announced] are the changes its issuer asks to notify about,
+ * [other] the remaining ones on the front that are not dates.
+ */
+class PassChange(val card: Card, val announced: List<String>, val other: List<String>)
 
 sealed interface UpdateOutcome {
     class Updated(val change: PassChange) : UpdateOutcome
@@ -36,7 +40,7 @@ class PassUpdater(private val repo: CardRepository, private val importer: PassIm
             HttpsURLConnection.HTTP_OK -> {
                 val body = response.body ?: return UpdateOutcome.Failed
                 val fresh = runCatching { importer.replace(card, body, response.lastModified) }.getOrNull() ?: return UpdateOutcome.Failed
-                if (fresh.content() == card.content()) UpdateOutcome.Unchanged else UpdateOutcome.Updated(PassChange(fresh, changedLines(card, fresh)))
+                if (fresh.content() == card.content()) UpdateOutcome.Unchanged else UpdateOutcome.Updated(change(card, fresh))
             }
             else -> UpdateOutcome.Failed
         }
@@ -79,12 +83,19 @@ class PassUpdater(private val repo: CardRepository, private val importer: PassIm
         /** The card without the bookkeeping of the update itself. */
         private fun Card.content() = copy(lastModified = null, updatedAt = null)
 
-        /** Fields that are new or have another value, as shown to the user. */
-        internal fun changedLines(old: Card, new: Card): List<String> {
+        /** Fields that are new or have another value, worded for a notification. */
+        internal fun change(old: Card, new: Card): PassChange {
             val before = old.fields().associate { (it.section to it.key) to it.value }
-            return new.fields()
-                .filter { before[it.section to it.key] != it.value }
-                .map { f -> f.label?.takeIf { it.isNotBlank() }?.let { "$it: ${f.value}" } ?: f.value }
+            val changed = new.fields().filter { before[it.section to it.key] != it.value }
+            val (marked, plain) = changed.partition { it.changeMessage != null }
+            return PassChange(
+                new,
+                marked.map { it.changeMessage!!.replace("%@", it.value) },
+                plain.filter { it.section != FieldSection.BACK && !it.isDate }.map { f ->
+                    val value = before[f.section to f.key]?.let { "$it → ${f.value}" } ?: f.value
+                    f.label?.let { "$it: $value" } ?: value
+                },
+            )
         }
     }
 }

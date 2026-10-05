@@ -8,6 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import dev.glowcow.stackd.container
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /** Keeps the periodic background update in line with the settings. */
@@ -34,13 +35,14 @@ object UpdateScheduler {
     }
 }
 
-/** Background run: updates every pass and notifies about the ones that changed. */
+/** Background run: updates every pass and notifies about the changes. */
 class PassUpdateService : JobService() {
     private var job: Job? = null
 
     override fun onStartJob(params: JobParameters): Boolean {
         job = container.scope.launch {
-            UpdateNotifier.notify(this@PassUpdateService, container.updater.updateAll())
+            val changes = container.updater.updateAll()
+            UpdateNotifier.notify(this@PassUpdateService, changes, container.settings.settings.first().notifyAllChanges)
             jobFinished(params, false)
         }
         return true
