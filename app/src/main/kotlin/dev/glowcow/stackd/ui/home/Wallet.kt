@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import dev.glowcow.stackd.data.Card
@@ -168,6 +169,8 @@ fun rememberWalletState(): WalletState {
 fun Wallet(
     cards: List<Card>,
     state: WalletState,
+    top: Dp,
+    bottom: Dp,
     bright: Boolean,
     onOpen: (String) -> Unit,
     actions: @Composable (Card) -> Unit,
@@ -203,12 +206,14 @@ fun Wallet(
             .draggable(drag, Orientation.Vertical, onDragStopped = { state.release(it) }),
     ) { measurables, constraints ->
         val side = 16.dp.roundToPx()
+        // The deck lives between the header and the tab bar; its cards run on under the bar.
+        val origin = top.roundToPx()
         val top = 16.dp.roundToPx()
         val step = 64.dp.roundToPx()
         val pileGap = 10.dp.roundToPx()
         val pilePeek = 30.dp.roundToPx()
         val width = constraints.maxWidth
-        val height = constraints.maxHeight
+        val height = constraints.maxHeight - origin - bottom.roundToPx()
         val child = Constraints(minWidth = width - 2 * side, maxWidth = width - 2 * side)
         val cardHeight = ((width - 2 * side) / CARD_ASPECT).roundToInt()
 
@@ -247,22 +252,22 @@ fun Wallet(
         val pileShown = others.coerceAtMost(4)
         val pileTop = height - pilePeek - (pileShown - 1).coerceAtLeast(0) * pileGap
 
-        layout(width, height) {
+        layout(width, constraints.maxHeight) {
             var j = 0
             placeables.forEachIndexed { i, placeable ->
                 val stackY = cardY(i, shift)
                 if (i == selectedIndex) {
                     // Stack order while moving, so the cards in front slide back over it; on top once open.
-                    placeable.place(side, lerp(stackY, top.toFloat(), p).roundToInt(), zIndex = if (p > 0.98f) n + 1f else i.toFloat())
+                    placeable.place(side, origin + lerp(stackY, top.toFloat(), p).roundToInt(), zIndex = if (p > 0.98f) n + 1f else i.toFloat())
                 } else {
                     val slot = (j - (others - pileShown)).coerceAtLeast(0)
                     val pileY = (pileTop + slot * pileGap).toFloat()
-                    placeable.place(side, lerp(stackY, pileY, p).roundToInt(), zIndex = i.toFloat())
+                    placeable.place(side, origin + lerp(stackY, pileY, p).roundToInt(), zIndex = i.toFloat())
                     j++
                 }
             }
             if (selectedIndex >= 0) {
-                val below = top + placeables[selectedIndex].height + 8.dp.roundToPx()
+                val below = origin + top + placeables[selectedIndex].height + 8.dp.roundToPx()
                 actionsPlaceable.placeWithLayer(0, below, zIndex = n + 2f) { alpha = p }
             }
         }

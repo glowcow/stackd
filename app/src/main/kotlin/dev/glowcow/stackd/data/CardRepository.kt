@@ -12,6 +12,8 @@ class CardRepository(private val dao: CardDao, private val filesDir: File) {
 
     fun observe(id: String): Flow<Card?> = dao.observe(id)
 
+    suspend fun all(): List<Card> = dao.all()
+
     suspend fun get(id: String): Card? = dao.get(id)
 
     suspend fun findPass(passTypeId: String, serial: String): Card? = dao.findPass(passTypeId, serial)
@@ -38,6 +40,10 @@ class CardRepository(private val dao: CardDao, private val filesDir: File) {
     fun passImage(id: String, role: String): File? = File(passDir(id), "$role.png").takeIf { it.isFile }
 
     fun passArchive(id: String) = File(passDir(id), "pass.pkpass")
+
+    val filesRoot: File get() = filesDir
+
+    fun coverFile(name: String): File = File(filesDir, "covers/$name").also { it.parentFile?.mkdirs() }
 
     fun newCoverFile(): File = File(filesDir, "covers/${UUID.randomUUID()}.jpg").also { it.parentFile?.mkdirs() }
 

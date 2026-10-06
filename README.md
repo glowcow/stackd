@@ -65,6 +65,15 @@ Spanish.
   system installer, which checks the signature and asks for confirmation. A
   weekly background check with a notification is off by default. Pass
   updates and this check are the only network traffic.
+- **Backup** — *Save a backup* in Settings writes every card, the stored
+  passes with their images, the cover photos and the settings into one
+  `.stackd` file wherever the system file picker lets you put it. With a
+  password the file is encrypted (AES-256-GCM, key from PBKDF2); without
+  one it is a plain zip. *Restore from a backup* adds the cards of a file to
+  the ones in the app; *Replace what is already here* decides whether a card
+  that exists in both, and the settings, are taken from the file. The same
+  data is also part of Android's own backup to the Google account, when
+  that is turned on in the system.
 - **Barcodes** are drawn with ZXing; while a card is open the screen stays on
   and its brightness goes to maximum (configurable). Share sends the original
   `.pkpass` or the number.
@@ -96,10 +105,11 @@ app/src/main/kotlin/dev/glowcow/stackd/
   pkpass/    .pkpass parser (pure JVM, unit-tested), .strings parser, importer
   update/    pass refresh from the issuer and app self-update, background
              jobs, notifications
+  backup/    the backup archive, its password encryption, save and restore
   data/      Room entity/DAO/database, repository, stack ordering, settings
   ui/        theme + icons, shared components, one package per screen
              (home/Wallet.kt: the deck, scrolling and the in-place open card)
-app/src/test/  parser and format tests
+app/src/test/  parser, update and backup tests
 ```
 
 ## Build
@@ -173,7 +183,8 @@ default *classic* scheme is neutral grey — light `#FAFAFA` / dark `#161616`
 backgrounds, accent `#1F6FEB`; the *warm* scheme of the original design has
 `#FAF9F5` / `#1A1A18` and accent `#D97757`. Card colours start from
 `#6A9BCC #788C5D #CBCADB #E3DACC #BCD1CA #141413`. UI font: Arimo, which
-covers every language of the app.
+covers every language of the app. The header and the tab bar are frosted
+glass: the page scrolls under them and shows through, blurred.
 
 ## License
 

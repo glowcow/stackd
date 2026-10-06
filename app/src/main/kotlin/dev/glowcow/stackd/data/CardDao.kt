@@ -10,6 +10,9 @@ interface CardDao {
     @Query("SELECT * FROM cards")
     fun observeAll(): Flow<List<Card>>
 
+    @Query("SELECT * FROM cards")
+    suspend fun all(): List<Card>
+
     @Query("SELECT * FROM cards WHERE id = :id")
     fun observe(id: String): Flow<Card?>
 

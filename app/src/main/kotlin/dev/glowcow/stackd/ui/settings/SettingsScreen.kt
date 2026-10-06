@@ -3,21 +3,34 @@ package dev.glowcow.stackd.ui.settings
 import android.Manifest
 import android.app.LocaleManager
 import android.os.LocaleList
+import android.net.Uri
+import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import dev.glowcow.stackd.backup.Backup
+import dev.glowcow.stackd.backup.RestoreOutcome
+import dev.glowcow.stackd.ui.theme.AppFont
+import java.time.LocalDate
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +40,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,13 +57,14 @@ import dev.glowcow.stackd.data.AppSettings
 import dev.glowcow.stackd.data.Palette
 import dev.glowcow.stackd.data.SettingsStore
 import dev.glowcow.stackd.data.ThemeMode
-import dev.glowcow.stackd.ui.components.BottomBar
 import dev.glowcow.stackd.ui.components.Group
 import dev.glowcow.stackd.ui.components.GroupDivider
 import dev.glowcow.stackd.ui.components.GroupRow
+import dev.glowcow.stackd.ui.components.ChoiceSheet
 import dev.glowcow.stackd.ui.components.GroupSheet
+import dev.glowcow.stackd.ui.components.SwitchRow
+import dev.glowcow.stackd.ui.components.TabScreen
 import dev.glowcow.stackd.ui.components.TopTab
-import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.update.AppRelease
 import dev.glowcow.stackd.update.AppUpdateState
 import dev.glowcow.stackd.update.AppUpdater
@@ -59,7 +74,32 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(private val store: SettingsStore, val updater: AppUpdater) : ViewModel() {
+class SettingsViewModel(private val store: SettingsStore, val updater: AppUpdater, private val backup: Backup) : ViewModel() {
+    /** A backup is being written or read. */
+    var busy by mutableStateOf(false)
+        private set
+
+    fun saveBackup(uri: Uri, password: String, onDone: (Boolean) -> Unit) = work { onDone(backup.save(uri, password)) }
+
+    /** Tells whether the file at [uri] wants a password; null when it cannot be read. */
+    fun inspectBackup(uri: Uri, onDone: (Boolean?) -> Unit) = work { onDone(backup.isEncrypted(uri)) }
+
+    fun restoreBackup(uri: Uri, password: String, overwrite: Boolean, onDone: (RestoreOutcome) -> Unit) = work {
+        onDone(backup.restore(uri, password, overwrite))
+    }
+
+    private fun work(block: suspend () -> Unit) {
+        if (busy) return
+        busy = true
+        viewModelScope.launch {
+            try {
+                block()
+            } finally {
+                busy = false
+            }
+        }
+    }
+
     val settings: StateFlow<AppSettings> = store.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
     fun setTheme(mode: ThemeMode) = viewModelScope.launch { store.setTheme(mode) }
     fun setPalette(palette: Palette) = viewModelScope.launch { store.setPalette(palette) }
@@ -73,7 +113,7 @@ class SettingsViewModel(private val store: SettingsStore, val updater: AppUpdate
 @Composable
 fun SettingsScreen(
     onTab: (TopTab) -> Unit,
-    vm: SettingsViewModel = viewModel { (this[APPLICATION_KEY] as StackdApp).container.let { SettingsViewModel(it.settings, it.appUpdater) } },
+    vm: SettingsViewModel = viewModel { (this[APPLICATION_KEY] as StackdApp).container.let { SettingsViewModel(it.settings, it.appUpdater, it.backup) } },
 ) {
     val c = StackdTheme.colors
     val settings by vm.settings.collectAsStateWithLifecycle()
@@ -95,21 +135,61 @@ fun SettingsScreen(
     }
     var release by remember { mutableStateOf<AppRelease?>(null) }
     var picker by rememberSaveable { mutableStateOf<Picker?>(null) }
+    // Where a backup goes and where it comes from is the user's pick in the system file picker.
+    var sheet by rememberSaveable { mutableStateOf<BackupSheet?>(null) }
+    var password by remember { mutableStateOf("") }
+    var source by remember { mutableStateOf<Uri?>(null) }
+    var locked by remember { mutableStateOf(false) }
+    var overwrite by remember { mutableStateOf(false) }
+    val resources = LocalResources.current
+    fun toast(text: String) = Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    fun restored(outcome: RestoreOutcome) {
+        toast(
+            when (outcome) {
+                is RestoreOutcome.Restored -> resources.getString(R.string.backup_restored, outcome.cards)
+                RestoreOutcome.WrongPassword -> resources.getString(R.string.backup_wrong_password)
+                RestoreOutcome.Invalid -> resources.getString(R.string.backup_invalid)
+            },
+        )
+        // A mistyped password is asked for again, for the same file.
+        if (outcome == RestoreOutcome.WrongPassword) sheet = BackupSheet.RESTORE
+    }
+    val saveTo = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
+        if (uri != null) vm.saveBackup(uri, password) { toast(resources.getString(if (it) R.string.backup_saved else R.string.backup_save_failed)) }
+        password = ""
+    }
+    val restoreFrom = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            vm.inspectBackup(uri) { encrypted ->
+                if (encrypted == null) return@inspectBackup restored(RestoreOutcome.Invalid)
+                source = uri
+                locked = encrypted
+                overwrite = false
+                sheet = BackupSheet.RESTORE
+            }
+        }
+    }
     fun setLanguage(tag: String?) {
         language = tag
         locales.applicationLocales = tag?.let { LocaleList.forLanguageTags(it) } ?: LocaleList.getEmptyLocaleList()
     }
 
-    Column(Modifier.fillMaxSize().background(c.groupBg)) {
-        Text(
-            stringResource(R.string.tab_settings),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color = c.text,
-            modifier = Modifier.statusBarsPadding().padding(horizontal = 20.dp, vertical = 14.dp),
-        )
+    TabScreen(
+        TopTab.SETTINGS,
+        onTab,
+        ground = c.groupBg,
+        header = {
+            Text(
+                stringResource(R.string.tab_settings),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = c.text,
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp),
+            )
+        },
+    ) { top, bottom ->
         Column(
-            Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 16.dp),
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(top = top, bottom = bottom + 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Group {
@@ -132,32 +212,10 @@ fun SettingsScreen(
                 )
             }
             Group {
-                GroupRow(
-                    stringResource(R.string.settings_brightness),
-                    subtitle = stringResource(R.string.settings_brightness_hint),
-                    onClick = { vm.setMaxBrightness(!settings.maxBrightness) },
-                    trailing = {
-                        Switch(
-                            checked = settings.maxBrightness,
-                            onCheckedChange = { vm.setMaxBrightness(it) },
-                            colors = SwitchDefaults.colors(checkedTrackColor = c.accent, uncheckedTrackColor = c.chip, uncheckedBorderColor = c.line),
-                        )
-                    },
-                )
+                SwitchRow(stringResource(R.string.settings_brightness), stringResource(R.string.settings_brightness_hint), settings.maxBrightness, vm::setMaxBrightness)
             }
             Group {
-                GroupRow(
-                    stringResource(R.string.settings_auto_update),
-                    subtitle = stringResource(R.string.settings_auto_update_hint),
-                    onClick = { setAutoUpdate(!settings.autoUpdate) },
-                    trailing = {
-                        Switch(
-                            checked = settings.autoUpdate,
-                            onCheckedChange = { setAutoUpdate(it) },
-                            colors = SwitchDefaults.colors(checkedTrackColor = c.accent, uncheckedTrackColor = c.chip, uncheckedBorderColor = c.line),
-                        )
-                    },
-                )
+                SwitchRow(stringResource(R.string.settings_auto_update), stringResource(R.string.settings_auto_update_hint), settings.autoUpdate, ::setAutoUpdate)
                 if (settings.autoUpdate) {
                     GroupDivider()
                     GroupRow(
@@ -166,25 +224,27 @@ fun SettingsScreen(
                         onClick = { picker = Picker.INTERVAL },
                     )
                     GroupDivider()
-                    GroupRow(
-                        stringResource(R.string.settings_notify_all),
-                        subtitle = stringResource(R.string.settings_notify_all_hint),
-                        onClick = { vm.setNotifyAllChanges(!settings.notifyAllChanges) },
-                        trailing = {
-                            Switch(
-                                checked = settings.notifyAllChanges,
-                                onCheckedChange = { vm.setNotifyAllChanges(it) },
-                                colors = SwitchDefaults.colors(checkedTrackColor = c.accent, uncheckedTrackColor = c.chip, uncheckedBorderColor = c.line),
-                            )
-                        },
-                    )
+                    SwitchRow(stringResource(R.string.settings_notify_all), stringResource(R.string.settings_notify_all_hint), settings.notifyAllChanges, vm::setNotifyAllChanges)
                 }
+            }
+            Group {
+                GroupRow(
+                    stringResource(R.string.settings_backup_save),
+                    subtitle = stringResource(R.string.settings_backup_save_hint),
+                    onClick = if (vm.busy) null else ({ sheet = BackupSheet.SAVE }),
+                )
+                GroupDivider()
+                GroupRow(
+                    stringResource(R.string.settings_backup_restore),
+                    subtitle = stringResource(R.string.settings_backup_restore_hint),
+                    onClick = if (vm.busy) null else ({ restoreFrom.launch(arrayOf("*/*")) }),
+                )
             }
             Group {
                 GroupRow(
                     stringResource(R.string.settings_version),
                     subtitle = when (val s = update) {
-                        AppUpdateState.Idle -> if (vm.updater.supported) null else stringResource(R.string.app_update_dev)
+                        AppUpdateState.Idle -> stringResource(if (vm.updater.supported) R.string.app_update_check else R.string.app_update_dev)
                         AppUpdateState.Checking -> stringResource(R.string.app_update_checking)
                         AppUpdateState.UpToDate -> stringResource(R.string.app_update_latest)
                         AppUpdateState.Failed -> stringResource(R.string.app_update_failed)
@@ -200,24 +260,15 @@ fun SettingsScreen(
                 )
                 if (vm.updater.supported) {
                     GroupDivider()
-                    GroupRow(
-                        stringResource(R.string.settings_app_update),
-                        subtitle = stringResource(R.string.settings_app_update_hint),
-                        onClick = { setAppUpdate(!settings.appUpdate) },
-                        trailing = {
-                            Switch(
-                                checked = settings.appUpdate,
-                                onCheckedChange = { setAppUpdate(it) },
-                                colors = SwitchDefaults.colors(checkedTrackColor = c.accent, uncheckedTrackColor = c.chip, uncheckedBorderColor = c.line),
-                            )
-                        },
-                    )
+                    SwitchRow(stringResource(R.string.settings_app_update), stringResource(R.string.settings_app_update_hint), settings.appUpdate, ::setAppUpdate)
                 }
+            }
+            Group {
+                GroupRow(stringResource(R.string.settings_licence), value = "GPL-3.0-or-later")
                 GroupDivider()
                 GroupRow(stringResource(R.string.settings_font), value = "Arimo · SIL OFL 1.1")
             }
         }
-        BottomBar(TopTab.SETTINGS, onTab)
     }
 
     release?.let { r ->
@@ -232,6 +283,33 @@ fun SettingsScreen(
             }
             Group { GroupRow(stringResource(R.string.app_update_install), onClick = { pick { vm.updater.install(r) } }) }
         }
+    }
+
+    when (sheet) {
+        BackupSheet.SAVE -> GroupSheet(stringResource(R.string.settings_backup_save), onDismiss = { sheet = null }) { pick ->
+            Text(stringResource(R.string.backup_password_note), color = c.muted, fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 14.dp))
+            PasswordField(password) { password = it }
+            Group(Modifier.padding(top = 12.dp)) {
+                GroupRow(stringResource(R.string.backup_save_pick), onClick = { pick { saveTo.launch(backupName()) } })
+            }
+        }
+        BackupSheet.RESTORE -> GroupSheet(stringResource(R.string.settings_backup_restore), onDismiss = { sheet = null }) { pick ->
+            var typed by remember { mutableStateOf("") }
+            if (locked) {
+                Text(stringResource(R.string.backup_encrypted), color = c.muted, fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 14.dp))
+                PasswordField(typed) { typed = it }
+            }
+            Group(Modifier.padding(top = if (locked) 12.dp else 0.dp)) {
+                SwitchRow(stringResource(R.string.backup_overwrite), stringResource(R.string.backup_overwrite_hint), overwrite) { overwrite = it }
+            }
+            Group(Modifier.padding(top = 12.dp)) {
+                GroupRow(
+                    stringResource(R.string.backup_restore),
+                    onClick = { pick { source?.let { vm.restoreBackup(it, typed, overwrite, ::restored) } } },
+                )
+            }
+        }
+        null -> Unit
     }
 
     when (picker) {
@@ -267,6 +345,32 @@ fun SettingsScreen(
     }
 }
 
+private enum class BackupSheet { SAVE, RESTORE }
+
+/** `stackd-2026-10-06.stackd` */
+private fun backupName() = "stackd-${LocalDate.now()}.stackd"
+
+@Composable
+private fun PasswordField(value: String, onChange: (String) -> Unit) {
+    val c = StackdTheme.colors
+    Box(
+        Modifier.fillMaxWidth().height(52.dp).clip(RoundedCornerShape(20.dp)).background(c.group).padding(horizontal = 16.dp),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        if (value.isEmpty()) Text(stringResource(R.string.backup_password), color = c.muted)
+        BasicTextField(
+            value = value,
+            onValueChange = onChange,
+            singleLine = true,
+            textStyle = TextStyle(color = c.text, fontFamily = AppFont, fontSize = 15.sp),
+            cursorBrush = SolidColor(c.accent),
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
 private enum class Picker { THEME, PALETTE, LANGUAGE, INTERVAL }
 
 private val UPDATE_HOURS = listOf(1, 3, 6, 12, 24)
@@ -298,23 +402,3 @@ private val LANGUAGES = listOf(
     "sr" to "Српски",
     "he" to "עברית",
 )
-
-/** Single choice in a bottom sheet; the current option carries a check mark. */
-@Composable
-private fun <T> ChoiceSheet(
-    title: String,
-    options: List<Pair<T, String>>,
-    selected: T,
-    onSelect: (T) -> Unit,
-    onDismiss: () -> Unit,
-) = GroupSheet(title, onDismiss) { pick ->
-    val accent = StackdTheme.colors.accent
-    Group {
-        options.forEachIndexed { i, (value, label) ->
-            if (i > 0) GroupDivider()
-            GroupRow(label, onClick = { pick { onSelect(value) } }, trailing = {
-                if (value == selected) Icon(StackdIcons.Check, null, tint = accent, modifier = Modifier.size(20.dp))
-            })
-        }
-    }
-}

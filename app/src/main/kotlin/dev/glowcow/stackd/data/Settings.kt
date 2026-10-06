@@ -64,6 +64,17 @@ class SettingsStore(private val context: Context) {
 
     suspend fun setAppUpdate(on: Boolean) = context.dataStore.edit { it[appUpdateKey] = on }
 
+    /** Replaces every setting at once, as when a backup is restored. */
+    suspend fun restore(s: AppSettings) = context.dataStore.edit {
+        it[themeKey] = s.theme.name
+        it[paletteKey] = s.palette.name
+        it[brightnessKey] = s.maxBrightness
+        it[autoUpdateKey] = s.autoUpdate
+        it[updateHoursKey] = s.updateHours
+        it[notifyAllKey] = s.notifyAllChanges
+        it[appUpdateKey] = s.appUpdate
+    }
+
     /** True the first time it is called for [task]. */
     suspend fun firstRun(task: String): Boolean {
         val key = booleanPreferencesKey("done_$task")

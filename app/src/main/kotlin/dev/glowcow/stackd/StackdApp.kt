@@ -2,6 +2,7 @@ package dev.glowcow.stackd
 
 import android.app.Application
 import android.content.Context
+import dev.glowcow.stackd.backup.Backup
 import dev.glowcow.stackd.data.CardRepository
 import dev.glowcow.stackd.data.SettingsStore
 import dev.glowcow.stackd.data.StackdDatabase
@@ -25,6 +26,7 @@ class AppContainer(context: Context) {
     val updater = PassUpdater(cards, importer)
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     val appUpdater = AppUpdater(context, scope)
+    val backup = Backup(context, cards, settings)
 }
 
 class StackdApp : Application() {

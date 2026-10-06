@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -67,8 +66,8 @@ import dev.glowcow.stackd.ui.CardDraft
 import dev.glowcow.stackd.ui.card.CardActions
 import dev.glowcow.stackd.ui.card.CardDetailsSheet
 import dev.glowcow.stackd.ui.card.ScreenBrightness
-import dev.glowcow.stackd.ui.components.BottomBar
 import dev.glowcow.stackd.ui.components.StackdLogo
+import dev.glowcow.stackd.ui.components.TabScreen
 import dev.glowcow.stackd.ui.components.TopTab
 import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.update.PassUpdater
@@ -189,12 +188,37 @@ fun HomeScreen(
         }
     }
 
-    Column(Modifier.fillMaxSize().background(c.bg).statusBarsPadding()) {
-        Box(Modifier.graphicsLayer { alpha = 1f - wallet.progress }) {
-            FilterTabs(pager) { if (!wallet.isOpen) scope.launch { pager.animateScrollToPage(it) } }
-        }
-
-        Box(Modifier.weight(1f)) {
+    TabScreen(
+        TopTab.CARDS,
+        onTab,
+        ground = c.bg,
+        header = {
+            Box(Modifier.graphicsLayer { alpha = 1f - wallet.progress }) {
+                FilterTabs(pager) { if (!wallet.isOpen) scope.launch { pager.animateScrollToPage(it) } }
+            }
+        },
+        floating = { bottom ->
+            if (wallet.progress < 1f) {
+                // The fading layer spans the screen: one the size of the button cuts its shadow to a square.
+                Box(Modifier.fillMaxSize().graphicsLayer { alpha = 1f - wallet.progress }) {
+                    Box(
+                        Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(end = 16.dp, bottom = bottom + 20.dp)
+                            .size(56.dp)
+                            .shadow(10.dp, CircleShape)
+                            .clip(CircleShape)
+                            .background(c.text)
+                            .clickable(enabled = !wallet.isOpen) { adding = true },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(StackdIcons.Plus, stringResource(R.string.add_card), tint = c.bg, modifier = Modifier.size(24.dp))
+                    }
+                }
+            }
+        },
+    ) { top, bottom ->
+        Box(Modifier.fillMaxSize()) {
             HorizontalPager(
                 pager,
                 Modifier.fillMaxSize(),
@@ -207,10 +231,12 @@ fun HomeScreen(
                 val shown = remember(list, filter) { list?.filter(filter::matches) }
                 when {
                     shown == null -> Unit
-                    shown.isEmpty() -> EmptyStack(filter)
+                    shown.isEmpty() -> EmptyStack(filter, Modifier.padding(top = top, bottom = bottom))
                     else -> Wallet(
                         cards = shown,
                         state = wallets[page],
+                        top = top,
+                        bottom = bottom,
                         bright = bright,
                         onOpen = ::open,
                         actions = { card ->
@@ -252,24 +278,7 @@ fun HomeScreen(
                     )
                 }
             }
-            if (wallet.progress < 1f) {
-                Box(
-                    Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(end = 16.dp, bottom = 20.dp)
-                        .graphicsLayer { alpha = 1f - wallet.progress }
-                        .size(56.dp)
-                        .shadow(10.dp, CircleShape)
-                        .clip(CircleShape)
-                        .background(c.text)
-                        .clickable(enabled = !wallet.isOpen) { adding = true },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(StackdIcons.Plus, stringResource(R.string.add_card), tint = c.bg, modifier = Modifier.size(24.dp))
-                }
-            }
         }
-        BottomBar(TopTab.CARDS, onTab)
     }
 
     if (adding) {
@@ -326,10 +335,10 @@ private fun FilterTabs(pager: PagerState, onSelect: (Int) -> Unit) {
 private val INDICATOR_WIDTH = 44.dp
 
 @Composable
-private fun EmptyStack(filter: KindFilter) {
+private fun EmptyStack(filter: KindFilter, modifier: Modifier = Modifier) {
     val c = StackdTheme.colors
     Column(
-        Modifier.fillMaxSize().padding(32.dp),
+        modifier.fillMaxSize().padding(32.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

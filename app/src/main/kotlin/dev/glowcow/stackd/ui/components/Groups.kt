@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -105,6 +107,39 @@ fun GroupSheet(title: String, onDismiss: () -> Unit, content: @Composable Column
                     action()
                 }
             }
+        }
+    }
+}
+
+/** A row of a [Group] that turns a setting on and off; a tap anywhere on it flips the switch. */
+@Composable
+fun SwitchRow(title: String, subtitle: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+    val c = StackdTheme.colors
+    GroupRow(title, subtitle = subtitle, onClick = { onChange(!checked) }, trailing = {
+        Switch(
+            checked = checked,
+            onCheckedChange = onChange,
+            colors = SwitchDefaults.colors(checkedTrackColor = c.accent, uncheckedTrackColor = c.chip, uncheckedBorderColor = c.line),
+        )
+    })
+}
+
+/** Single choice in a bottom sheet; the current option carries a check mark. */
+@Composable
+fun <T> ChoiceSheet(
+    title: String,
+    options: List<Pair<T, String>>,
+    selected: T,
+    onSelect: (T) -> Unit,
+    onDismiss: () -> Unit,
+) = GroupSheet(title, onDismiss) { pick ->
+    val accent = StackdTheme.colors.accent
+    Group {
+        options.forEachIndexed { i, (value, label) ->
+            if (i > 0) GroupDivider()
+            GroupRow(label, onClick = { pick { onSelect(value) } }, trailing = {
+                if (value == selected) Icon(StackdIcons.Check, null, tint = accent, modifier = Modifier.size(20.dp))
+            })
         }
     }
 }

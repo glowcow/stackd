@@ -4,12 +4,12 @@
         <include domain="database" path="." />
         <include domain="file" path="passes/" />
         <include domain="file" path="covers/" />
-        <include domain="sharedpref" path="." />
+        <include domain="file" path="datastore/" />
     </cloud-backup>
     <device-transfer>
         <include domain="database" path="." />
         <include domain="file" path="passes/" />
         <include domain="file" path="covers/" />
-        <include domain="sharedpref" path="." />
+        <include domain="file" path="datastore/" />
     </device-transfer>
 </data-extraction-rules>

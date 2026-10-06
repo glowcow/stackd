@@ -13,6 +13,7 @@ enum class CardKind { CARD, TICKET }
 @Serializable
 enum class CardSource { SCAN, PHOTO, GALLERY, MANUAL, PKPASS }
 
+@Serializable
 @Entity(
     tableName = "cards",
     indices = [Index(value = ["passTypeId", "serial"], unique = true)],

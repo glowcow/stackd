@@ -5,13 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,8 +43,8 @@ import dev.glowcow.stackd.StackdApp
 import dev.glowcow.stackd.data.Card
 import dev.glowcow.stackd.data.CardRepository
 import dev.glowcow.stackd.data.StackOrder
-import dev.glowcow.stackd.ui.components.BottomBar
 import dev.glowcow.stackd.ui.components.CardAvatar
+import dev.glowcow.stackd.ui.components.TabScreen
 import dev.glowcow.stackd.ui.components.TopTab
 import dev.glowcow.stackd.ui.components.cardMeta
 import dev.glowcow.stackd.ui.components.kindLabel
@@ -81,39 +81,43 @@ fun SearchScreen(
     val focus = remember { FocusRequester() }
     LaunchedEffect(Unit) { focus.requestFocus() }
 
-    Column(Modifier.fillMaxSize().background(c.bg)) {
-        Row(
-            Modifier
-                .statusBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .fillMaxWidth()
-                .height(48.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(c.chip)
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Icon(StackdIcons.Search, null, tint = c.muted, modifier = Modifier.size(20.dp))
-            Box(Modifier.weight(1f)) {
-                if (query.isEmpty()) Text(stringResource(R.string.search_hint), color = c.muted)
-                BasicTextField(
-                    value = query,
-                    onValueChange = { vm.query.value = it },
-                    singleLine = true,
-                    textStyle = TextStyle(color = c.text, fontFamily = AppFont, fontSize = 15.sp),
-                    cursorBrush = SolidColor(c.accent),
-                    modifier = Modifier.fillMaxWidth().focusRequester(focus),
-                )
+    TabScreen(
+        TopTab.SEARCH,
+        onTab,
+        ground = c.bg,
+        header = {
+            Row(
+                Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(c.chip)
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Icon(StackdIcons.Search, null, tint = c.muted, modifier = Modifier.size(20.dp))
+                Box(Modifier.weight(1f)) {
+                    if (query.isEmpty()) Text(stringResource(R.string.search_hint), color = c.muted)
+                    BasicTextField(
+                        value = query,
+                        onValueChange = { vm.query.value = it },
+                        singleLine = true,
+                        textStyle = TextStyle(color = c.text, fontFamily = AppFont, fontSize = 15.sp),
+                        cursorBrush = SolidColor(c.accent),
+                        modifier = Modifier.fillMaxWidth().focusRequester(focus),
+                    )
+                }
             }
-        }
-        LazyColumn(Modifier.weight(1f)) {
+        },
+    ) { top, bottom ->
+        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(top = top, bottom = bottom)) {
             items(results, key = { it.id }) { card -> CardRow(card) { onOpen(card.id) } }
             if (results.isEmpty() && query.isNotBlank()) {
                 item { Text(stringResource(R.string.search_empty), color = c.muted, modifier = Modifier.padding(16.dp)) }
             }
         }
-        BottomBar(TopTab.SEARCH, onTab)
     }
 }
 

@@ -210,7 +210,7 @@ enum class TopTab { CARDS, SEARCH, SCANNER, SETTINGS }
 @Composable
 fun BottomBar(current: TopTab, onSelect: (TopTab) -> Unit) {
     val c = StackdTheme.colors
-    Column(Modifier.background(c.bg).navigationBarsPadding()) {
+    Column(Modifier.navigationBarsPadding()) {
         Box(Modifier.fillMaxWidth().height(1.dp).background(c.line))
         Row(Modifier.fillMaxWidth().height(64.dp), verticalAlignment = Alignment.CenterVertically) {
             val items = listOf(
