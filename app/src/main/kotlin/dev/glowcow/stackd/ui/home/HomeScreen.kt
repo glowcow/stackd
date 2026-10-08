@@ -68,6 +68,7 @@ import dev.glowcow.stackd.ui.card.CardActions
 import dev.glowcow.stackd.ui.card.CardDetailsSheet
 import dev.glowcow.stackd.ui.card.ScreenBrightness
 import dev.glowcow.stackd.ui.components.StackdLogo
+import dev.glowcow.stackd.ui.components.GlassLine
 import dev.glowcow.stackd.ui.components.TabScreen
 import dev.glowcow.stackd.ui.components.TopTab
 import dev.glowcow.stackd.ui.theme.StackdIcons
@@ -334,7 +335,7 @@ private fun FilterTabs(pager: PagerState, onSelect: (Int) -> Unit) {
                     .background(c.accent),
             )
         }
-        Box(Modifier.fillMaxWidth().height(1.dp).background(c.line))
+        GlassLine()
     }
 }
 

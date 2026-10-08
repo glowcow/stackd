@@ -1,5 +1,9 @@
 package dev.glowcow.stackd.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -20,6 +24,7 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.glowcow.stackd.ui.theme.StackdTheme
 
 /**
  * Frosted glass: the part of [page] lying under this element, blurred and tinted with [ground].
@@ -62,8 +67,19 @@ fun Modifier.frosted(page: GraphicsLayer, ground: Color, fade: Dp = 0.dp, fadeDo
     }
 }
 
+/**
+ * The 1 dp edge of a glass bar. It is the text colour, thin: a solid line turns into a dark stripe
+ * where something light shows through the glass of a dark theme.
+ */
+@Composable
+fun GlassLine() {
+    Box(Modifier.fillMaxWidth().height(1.dp).background(StackdTheme.colors.text.copy(alpha = GLASS_LINE)))
+}
+
 /** Keeps touches from reaching the page that shows through the glass. */
 fun Modifier.solid() = pointerInput(Unit) {}
+
+private const val GLASS_LINE = 0.12f
 
 private val FROST_BLUR = 20.dp
 
