@@ -13,6 +13,11 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,18 +27,28 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.glowcow.stackd.ui.theme.AppFont
 import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.ui.theme.StackdTheme
 import kotlinx.coroutines.launch
@@ -99,7 +114,7 @@ fun GroupSheet(title: String, onDismiss: () -> Unit, content: @Composable Column
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = state, containerColor = c.groupBg) {
-        Column(Modifier.navigationBarsPadding().padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+        Column(Modifier.verticalScroll(rememberScrollState()).navigationBarsPadding().padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
             Text(title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = c.text, modifier = Modifier.padding(start = 4.dp, bottom = 14.dp))
             content { action ->
                 scope.launch { state.hide() }.invokeOnCompletion {
@@ -122,6 +137,53 @@ fun SwitchRow(title: String, subtitle: String, checked: Boolean, onChange: (Bool
             colors = SwitchDefaults.colors(checkedTrackColor = c.accent, uncheckedTrackColor = c.chip, uncheckedBorderColor = c.line),
         )
     })
+}
+
+/**
+ * A row of a [Group] to type into: the [label] stays above the text. [secret] hides what is typed;
+ * a field that is not [singleLine] starts three lines tall.
+ */
+@Composable
+fun GroupField(
+    label: String,
+    value: String,
+    onChange: (String) -> Unit,
+    placeholder: String? = null,
+    keyboard: KeyboardType = KeyboardType.Text,
+    capitalize: Boolean = false,
+    singleLine: Boolean = true,
+    secret: Boolean = false,
+) {
+    val c = StackdTheme.colors
+    val focus = remember { FocusRequester() }
+    Column(
+        Modifier
+            .fillMaxWidth()
+            // A tap anywhere on the row puts the cursor into the field.
+            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { focus.requestFocus() }
+            .heightIn(min = 58.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+    ) {
+        Text(label, color = c.muted, fontSize = 13.sp)
+        Box {
+            if (value.isEmpty() && placeholder != null) Text(placeholder, color = c.muted, fontSize = 15.sp)
+            BasicTextField(
+                value = value,
+                onValueChange = onChange,
+                singleLine = singleLine,
+                minLines = if (singleLine) 1 else 3,
+                textStyle = TextStyle(color = c.text, fontFamily = AppFont, fontSize = 15.sp),
+                cursorBrush = SolidColor(c.accent),
+                visualTransformation = if (secret) PasswordVisualTransformation() else VisualTransformation.None,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = if (secret) KeyboardType.Password else keyboard,
+                    capitalization = if (capitalize) KeyboardCapitalization.Sentences else KeyboardCapitalization.None,
+                ),
+                modifier = Modifier.fillMaxWidth().focusRequester(focus),
+            )
+        }
+    }
 }
 
 /** Single choice in a bottom sheet; the current option carries a check mark. */

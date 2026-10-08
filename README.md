@@ -28,61 +28,24 @@ Spanish.
 
 ## Features
 
-- **Stack home screen** — cards overlap like a deck, ordered by the date they
-  were added, the newest in front with its barcode visible. A card has the
-  proportions of a real one (ISO/IEC 7810 ID-1). The deck fans out down the
-  screen: cards sit tight under the top edge and wide apart at the bottom, so
-  scrolling leafs through them; past the ends it stretches like a rubber band
-  and springs back. Pinned cards form a second stack of their own below the
-  rest. Tabs all / cards / tickets switch by swipe.
-- **Cards open in place**, like Apple Wallet — a tapped card rises to the top
-  and unfolds its fields and barcode, the rest drop into a pile at the bottom.
-  A tap on the card or the pile, a drag down or the (predictive) back gesture
-  folds it back into its slot. Under the open card: share, update, edit,
-  pin, and details (back fields, dates, delete) in a bottom sheet.
-- **Scanner** — live barcode detection only (CameraX + ML Kit, bundled
-  model, works offline); it slides up over the app and back down on the back
-  gesture.
-- **Add (+)** — a sheet with every source: `.pkpass` file, barcode search in
-  a gallery image, a photo of the card that becomes its cover, manual entry,
-  and the scanner.
-- **`.pkpass` import** — opens `application/vnd.apple.pkpass` (and
-  `.pkpasses` bundles) from other apps. Parses `pass.json` (as leniently as
-  Wallet: trailing commas and comments are accepted), `*.lproj`
-  localisation, colours, images and all field sections. Re-importing the same
-  pass (`passTypeIdentifier` + `serialNumber`) updates it in place. The Apple
-  signature is not verified — passes are only displayed.
-- **Pass updates** — a pass that names a web service (`webServiceURL` +
-  `authenticationToken`) can be refreshed: the *Update* button under the
-  open card, or automatically every 1–24 h (off by default, Settings). A
-  notification comes for the fields the issuer marks with `changeMessage`,
-  as iOS does; *Notify about any change* adds the other fields on the front,
-  dates aside. It is Apple's PassKit web service
-  `GET …/v1/passes/{type}/{serial}`, https only; issuers cannot push to
-  Android, so the app polls.
-- **App updates** — a tap on *Version* in Settings asks GitHub for the latest
-  release, shows what changed and can download the APK and pass it to the
-  system installer, which checks the signature and asks for confirmation. A
-  weekly background check with a notification is off by default. Pass
-  updates and this check are the only network traffic.
-- **Backup** — *Save a backup* in Settings writes every card, the stored
-  passes with their images, the cover photos and the settings into one
-  `.stackd` file wherever the system file picker lets you put it. With a
-  password the file is encrypted (AES-256-GCM, key from PBKDF2); without
-  one it is a plain zip. *Restore from a backup* adds the cards of a file to
-  the ones in the app; *Replace what is already here* decides whether a card
-  that exists in both, and the settings, are taken from the file. The same
-  data is also part of Android's own backup to the Google account, when
-  that is turned on in the system.
-- **Barcodes** are drawn with ZXing; while a card is open the screen stays on
-  and its brightness goes to maximum (configurable). Share sends the original
-  `.pkpass` or the number.
-- **Languages** — English (default), Belarusian, German, Spanish, French,
-  Italian, Polish, Russian, Serbian (Cyrillic) and Hebrew (right-to-left). Pick one in Settings or in the
-  system *Settings → Apps → Stackd → App language*; both share one value.
-- **Look** — light, dark or system theme, and two colour schemes: the neutral
-  classic default with a blue accent and a warm one.
-- Search by name, number or note.
+- **Stack** — cards overlap like a deck, the newest in front; scrolling
+  leafs through them, pinned cards form a stack of their own.
+- **Open in place** — a tapped card unfolds its fields and barcode, as in
+  Apple Wallet; the screen stays on at full brightness while it is open.
+- **Add** — a `.pkpass` file, a live barcode scan, a barcode in a gallery
+  image, a photo of the card as its cover, or the number typed by hand.
+- **`.pkpass`** — opens passes and `.pkpasses` bundles from mail, a browser
+  or a file manager, with their colours, images and translations.
+- **Pass updates** — refreshes a pass from its issuer on a tap or on a
+  schedule, and notifies about what changed. Off by default.
+- **Backup** — every card and the settings in one file, encrypted with a
+  password if you set one; also part of Android's own backup.
+- **App updates** — checks the releases on GitHub and installs a new
+  version from inside the app. The weekly check is off by default.
+- **Look** — light, dark or system theme, two colour schemes, ten
+  languages including right-to-left Hebrew.
+- **Private** — no account, no analytics; nothing touches the network
+  until you turn on an update.
 
 ## Stack
 

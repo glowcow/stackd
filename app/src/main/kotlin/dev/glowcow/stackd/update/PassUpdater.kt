@@ -12,8 +12,8 @@ import java.net.URLEncoder
 import javax.net.ssl.HttpsURLConnection
 
 /**
- * An updated pass: [announced] are the changes its issuer asks to notify about,
- * [other] the remaining ones on the front that are not dates.
+ * An updated pass: [announced] are the changes its issuer asks to notify about, or every change
+ * on the front of a pass with no such marks; [other] the remaining ones on the front. Dates aside.
  */
 class PassChange(val card: Card, val announced: List<String>, val other: List<String>)
 
@@ -27,7 +27,12 @@ sealed interface UpdateOutcome {
  * Fetches fresh copies of passes from the web service named in them (Apple's PassKit web service:
  * `GET {webServiceURL}/v1/passes/{passTypeIdentifier}/{serialNumber}`). Issuers cannot push to us, so we poll.
  */
-class PassUpdater(private val repo: CardRepository, private val importer: PassImporter) {
+class PassUpdater(
+    private val repo: CardRepository,
+    private val importer: PassImporter,
+    /** Words a new value next to the one it replaced. */
+    private val was: (new: String, old: String) -> String,
+) {
 
     suspend fun update(card: Card): UpdateOutcome {
         if (!card.canUpdate) return UpdateOutcome.Failed
@@ -40,7 +45,7 @@ class PassUpdater(private val repo: CardRepository, private val importer: PassIm
             HttpsURLConnection.HTTP_OK -> {
                 val body = response.body ?: return UpdateOutcome.Failed
                 val fresh = runCatching { importer.replace(card, body, response.lastModified) }.getOrNull() ?: return UpdateOutcome.Failed
-                if (fresh.content() == card.content()) UpdateOutcome.Unchanged else UpdateOutcome.Updated(change(card, fresh))
+                if (fresh.content() == card.content()) UpdateOutcome.Unchanged else UpdateOutcome.Updated(change(card, fresh, was))
             }
             else -> UpdateOutcome.Failed
         }
@@ -83,18 +88,24 @@ class PassUpdater(private val repo: CardRepository, private val importer: PassIm
         /** The card without the bookkeeping of the update itself. */
         private fun Card.content() = copy(lastModified = null, updatedAt = null)
 
-        /** Fields that are new or have another value, worded for a notification. */
-        internal fun change(old: Card, new: Card): PassChange {
+        /**
+         * Fields that are new or have another value, worded for a notification. A pass whose issuer
+         * marks no field at all does not use the marks, so its front changes are announced.
+         */
+        internal fun change(old: Card, new: Card, was: (new: String, old: String) -> String): PassChange {
             val before = old.fields().associate { (it.section to it.key) to it.value }
-            val changed = new.fields().filter { before[it.section to it.key] != it.value }
+            val fields = new.fields()
+            val changed = fields.filter { before[it.section to it.key] != it.value }
             val (marked, plain) = changed.partition { it.changeMessage != null }
+            val front = plain.filter { it.section != FieldSection.BACK && !it.isDate }.map { f ->
+                val value = before[f.section to f.key]?.let { was(f.value, it) } ?: f.value
+                f.label?.let { "$it: $value" } ?: value
+            }
+            val unmarked = fields.none { it.changeMessage != null }
             return PassChange(
                 new,
-                marked.map { it.changeMessage!!.replace("%@", it.value) },
-                plain.filter { it.section != FieldSection.BACK && !it.isDate }.map { f ->
-                    val value = before[f.section to f.key]?.let { "$it → ${f.value}" } ?: f.value
-                    f.label?.let { "$it: $value" } ?: value
-                },
+                marked.map { it.changeMessage!!.replace("%@", it.value) } + if (unmarked) front else emptyList(),
+                if (unmarked) emptyList() else front,
             )
         }
     }

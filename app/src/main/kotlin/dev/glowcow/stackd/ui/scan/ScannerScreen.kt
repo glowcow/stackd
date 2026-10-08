@@ -41,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
@@ -62,7 +61,8 @@ import dev.glowcow.stackd.container
 import dev.glowcow.stackd.data.CardSource
 import dev.glowcow.stackd.ui.CardDraft
 import dev.glowcow.stackd.ui.components.IconButton48
-import dev.glowcow.stackd.ui.theme.ScannerColors
+import dev.glowcow.stackd.ui.components.PillButton
+import dev.glowcow.stackd.ui.theme.LocalDarkColors
 import dev.glowcow.stackd.ui.theme.StackdColorsProvider
 import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.ui.theme.StackdTheme
@@ -74,7 +74,7 @@ fun ScannerScreen(
     photo: Boolean,
     onClose: () -> Unit,
     onDraft: (CardDraft) -> Unit,
-) = StackdColorsProvider(ScannerColors) {
+) = StackdColorsProvider(LocalDarkColors.current) {
     val c = StackdTheme.colors
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -133,10 +133,10 @@ fun ScannerScreen(
             Text(
                 stringResource(if (photo) R.string.add_photo else R.string.tab_scanner),
                 fontWeight = FontWeight.Bold,
-                fontSize = 17.sp,
+                fontSize = 22.sp,
                 color = c.text,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                modifier = Modifier.weight(1f).padding(start = 4.dp, end = 8.dp),
             )
             IconButton48(
                 if (torch) StackdIcons.FlashOn else StackdIcons.Flash,
@@ -151,7 +151,7 @@ fun ScannerScreen(
                 .fillMaxWidth()
                 .weight(1f)
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color(0xFF2B2A27)),
+                .background(c.chip),
             contentAlignment = Alignment.Center,
         ) {
             if (hasCamera) {
@@ -176,17 +176,18 @@ fun ScannerScreen(
                 }
                 Text(
                     stringResource(hint),
-                    color = Color(0xFFD8D6CD),
+                    color = c.text,
                     fontSize = 15.sp,
                     textAlign = TextAlign.Center,
+                    // Opaque: a camera preview is not part of a page that glass could blur.
                     modifier = Modifier
                         .widthIn(max = 280.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color.Black.copy(alpha = 0.35f))
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(c.bg)
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                 )
                 if (!hasCamera) {
-                    Pill(stringResource(R.string.scan_grant)) {
+                    PillButton(stringResource(R.string.scan_grant)) {
                         if (asked) {
                             context.startActivity(
                                 Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null)),
@@ -230,20 +231,4 @@ private fun ScanFrame() {
             drawPath(corners, accent, style = Stroke(width = 4f, cap = StrokeCap.Round))
         }
     }
-}
-
-@Composable
-private fun Pill(label: String, onClick: () -> Unit) {
-    val c = StackdTheme.colors
-    Text(
-        label,
-        color = c.bg,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
-        modifier = Modifier
-            .clip(RoundedCornerShape(18.dp))
-            .background(c.text)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 8.dp),
-    )
 }

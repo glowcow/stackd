@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -149,6 +150,7 @@ fun HomeScreen(
 ) {
     val c = StackdTheme.colors
     val context = LocalContext.current
+    val resources = LocalResources.current
     val cards by vm.cards.collectAsStateWithLifecycle()
     val settings by vm.settings.collectAsStateWithLifecycle()
     val pager = rememberPagerState { KindFilter.entries.size }
@@ -212,7 +214,7 @@ fun HomeScreen(
                             .clickable(enabled = !wallet.isOpen) { adding = true },
                         contentAlignment = Alignment.Center,
                     ) {
-                        Icon(StackdIcons.Plus, stringResource(R.string.add_card), tint = c.bg, modifier = Modifier.size(24.dp))
+                        Icon(StackdIcons.Plus, stringResource(R.string.add_card), tint = c.bg, modifier = Modifier.size(22.dp))
                     }
                 }
             }
@@ -250,12 +252,16 @@ fun HomeScreen(
                                 onUpdate = if (card.canUpdate) {
                                     {
                                         vm.update(card) { outcome ->
+                                            // What changed is said in the words a notification would use.
+                                            val lines = (outcome as? UpdateOutcome.Updated)?.change?.let {
+                                                if (settings?.notifyAllChanges == true) it.announced + it.other else it.announced
+                                            }.orEmpty()
                                             val text = when (outcome) {
-                                                is UpdateOutcome.Updated -> R.string.update_done
-                                                UpdateOutcome.Unchanged -> R.string.update_same
-                                                UpdateOutcome.Failed -> R.string.update_failed
+                                                is UpdateOutcome.Updated -> lines.take(2).joinToString("\n").ifEmpty { resources.getString(R.string.update_done) }
+                                                UpdateOutcome.Unchanged -> resources.getString(R.string.update_same)
+                                                UpdateOutcome.Failed -> resources.getString(R.string.update_failed)
                                             }
-                                            Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, text, if (lines.isEmpty()) Toast.LENGTH_SHORT else Toast.LENGTH_LONG).show()
                                         }
                                     }
                                 } else {
@@ -297,19 +303,19 @@ fun HomeScreen(
 private fun FilterTabs(pager: PagerState, onSelect: (Int) -> Unit) {
     val c = StackdTheme.colors
     Column {
-        BoxWithConstraints(Modifier.fillMaxWidth().height(52.dp)) {
+        BoxWithConstraints(Modifier.fillMaxWidth().height(56.dp)) {
             val tabWidth = maxWidth / KindFilter.entries.size
             Row(Modifier.fillMaxSize()) {
                 KindFilter.entries.forEachIndexed { i, f ->
                     val active = i == pager.targetPage
-                    Box(Modifier.weight(1f).fillMaxHeight().padding(bottom = 7.dp), contentAlignment = Alignment.BottomCenter) {
+                    Box(Modifier.weight(1f).fillMaxHeight().padding(bottom = 4.dp), contentAlignment = Alignment.BottomCenter) {
                         // The press highlight is a pill around the label, not the whole tab.
                         Text(
                             stringResource(f.label),
                             color = if (active) c.text else c.muted,
                             fontWeight = if (active) FontWeight.Bold else FontWeight.Medium,
                             fontSize = 15.sp,
-                            modifier = Modifier.clip(CircleShape).clickable { onSelect(i) }.padding(horizontal = 20.dp, vertical = 10.dp),
+                            modifier = Modifier.clip(CircleShape).clickable { onSelect(i) }.padding(horizontal = 20.dp, vertical = 14.dp),
                         )
                     }
                 }

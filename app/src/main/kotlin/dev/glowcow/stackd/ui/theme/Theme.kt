@@ -82,11 +82,10 @@ val ClassicDarkColors = StackdColors(
     isDark = true,
 )
 
-/** Scanner is dark regardless of the app theme; it keeps the accent of the scheme in use. */
-val ScannerColors: StackdColors
-    @Composable get() = DarkColors.copy(bg = Color(0xFF141413), line = Color(0xFF45443F), accent = StackdTheme.colors.accent)
+val LocalStackdColors = staticCompositionLocalOf { ClassicLightColors }
 
-val LocalStackdColors = staticCompositionLocalOf { LightColors }
+/** The dark colours of the scheme in use, for a page that is dark in any theme. */
+val LocalDarkColors = staticCompositionLocalOf { ClassicDarkColors }
 
 object StackdTheme {
     val colors: StackdColors
@@ -128,11 +127,13 @@ fun StackdTheme(mode: ThemeMode = ThemeMode.SYSTEM, palette: Palette = Palette.C
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
     }
-    val colors = when (palette) {
-        Palette.WARM -> if (dark) DarkColors else LightColors
-        Palette.CLASSIC -> if (dark) ClassicDarkColors else ClassicLightColors
+    val (light, night) = when (palette) {
+        Palette.WARM -> LightColors to DarkColors
+        Palette.CLASSIC -> ClassicLightColors to ClassicDarkColors
     }
-    StackdColorsProvider(colors, content)
+    CompositionLocalProvider(LocalDarkColors provides night) {
+        StackdColorsProvider(if (dark) night else light, content)
+    }
 }
 
 @Composable

@@ -20,10 +20,10 @@
     <string name="add_scan">Zeskanuj kod kreskowy</string>
     <string name="close">Zamknij</string>
     <string name="cancel">Anuluj</string>
-    <string name="save">Gotowe</string>
+    <string name="save">Zapisz</string>
     <string name="delete">Usuń</string>
     <string name="delete_title">Usunąć „%1$s”?</string>
-    <string name="delete_text">Karta i jej pliki zostaną usunięte z telefonu.</string>
+    <string name="delete_text">Karta i jej pliki zostaną usunięte z telefonu</string>
 
     <string name="empty_title">Stos jest pusty</string>
     <string name="empty_tickets_title">Nie ma jeszcze biletów</string>
@@ -59,6 +59,7 @@
     <string name="edit_name_placeholder">Nazwa</string>
     <string name="edit_subtitle">Podtytuł</string>
     <string name="edit_subtitle_hint">Na przykład kawiarnia</string>
+    <string name="edit_kind">Typ</string>
     <string name="edit_number">Numer karty</string>
     <string name="edit_format">Format kodu kreskowego</string>
     <string name="edit_format_auto">Automatycznie</string>
@@ -79,6 +80,7 @@
     <string name="import_failed">Nie udało się otworzyć pliku .pkpass</string>
     <string name="import_many">Dodane karty: %1$d</string>
     <string name="update_done">Karta została zaktualizowana</string>
+    <string name="update_was">%1$s (było %2$s)</string>
     <string name="update_same">Bez zmian</string>
     <string name="update_failed">Nie udało się zaktualizować karty</string>
     <string name="updates_channel">Aktualizacje kart</string>

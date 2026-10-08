@@ -23,7 +23,7 @@ class AppContainer(context: Context) {
     val cards = CardRepository(db.cards(), context.filesDir)
     val settings = SettingsStore(context)
     val importer = PassImporter(context, cards)
-    val updater = PassUpdater(cards, importer)
+    val updater = PassUpdater(cards, importer) { new, old -> context.getString(R.string.update_was, new, old) }
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     val appUpdater = AppUpdater(context, scope)
     val backup = Backup(context, cards, settings)

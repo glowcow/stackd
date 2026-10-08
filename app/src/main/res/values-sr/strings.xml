@@ -20,10 +20,10 @@
     <string name="add_scan">Скенирај бар-код</string>
     <string name="close">Затвори</string>
     <string name="cancel">Откажи</string>
-    <string name="save">Готово</string>
+    <string name="save">Сачувај</string>
     <string name="delete">Избриши</string>
     <string name="delete_title">Избрисати „%1$s“?</string>
-    <string name="delete_text">Картица и њене датотеке биће уклоњене са телефона.</string>
+    <string name="delete_text">Картица и њене датотеке биће уклоњене са телефона</string>
 
     <string name="empty_title">Гомила је празна</string>
     <string name="empty_tickets_title">Још нема карата</string>
@@ -59,6 +59,7 @@
     <string name="edit_name_placeholder">Назив</string>
     <string name="edit_subtitle">Поднаслов</string>
     <string name="edit_subtitle_hint">На пример, кафић</string>
+    <string name="edit_kind">Тип</string>
     <string name="edit_number">Број картице</string>
     <string name="edit_format">Формат бар-кода</string>
     <string name="edit_format_auto">Аутоматски</string>
@@ -79,6 +80,7 @@
     <string name="import_failed">Отварање датотеке .pkpass није успело</string>
     <string name="import_many">Додато картица: %1$d</string>
     <string name="update_done">Пропусница је ажурирана</string>
+    <string name="update_was">%1$s (било је %2$s)</string>
     <string name="update_same">Нема промена</string>
     <string name="update_failed">Ажурирање пропуснице није успело</string>
     <string name="updates_channel">Ажурирања пропусница</string>

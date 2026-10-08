@@ -59,6 +59,7 @@ import dev.glowcow.stackd.data.SettingsStore
 import dev.glowcow.stackd.data.ThemeMode
 import dev.glowcow.stackd.ui.components.Group
 import dev.glowcow.stackd.ui.components.GroupDivider
+import dev.glowcow.stackd.ui.components.GroupField
 import dev.glowcow.stackd.ui.components.GroupRow
 import dev.glowcow.stackd.ui.components.ChoiceSheet
 import dev.glowcow.stackd.ui.components.GroupSheet
@@ -352,23 +353,7 @@ private fun backupName() = "stackd-${LocalDate.now()}.stackd"
 
 @Composable
 private fun PasswordField(value: String, onChange: (String) -> Unit) {
-    val c = StackdTheme.colors
-    Box(
-        Modifier.fillMaxWidth().height(52.dp).clip(RoundedCornerShape(20.dp)).background(c.group).padding(horizontal = 16.dp),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        if (value.isEmpty()) Text(stringResource(R.string.backup_password), color = c.muted)
-        BasicTextField(
-            value = value,
-            onValueChange = onChange,
-            singleLine = true,
-            textStyle = TextStyle(color = c.text, fontFamily = AppFont, fontSize = 15.sp),
-            cursorBrush = SolidColor(c.accent),
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }
+    Group { GroupField(stringResource(R.string.backup_password), value, onChange, secret = true) }
 }
 
 private enum class Picker { THEME, PALETTE, LANGUAGE, INTERVAL }

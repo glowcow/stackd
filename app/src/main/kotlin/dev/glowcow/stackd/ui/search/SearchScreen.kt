@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -91,13 +91,13 @@ fun SearchScreen(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .fillMaxWidth()
                     .height(48.dp)
-                    .clip(RoundedCornerShape(24.dp))
+                    .clip(CircleShape)
                     .background(c.chip)
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                Icon(StackdIcons.Search, null, tint = c.muted, modifier = Modifier.size(20.dp))
+                Icon(StackdIcons.Search, null, tint = c.muted, modifier = Modifier.size(22.dp))
                 Box(Modifier.weight(1f)) {
                     if (query.isEmpty()) Text(stringResource(R.string.search_hint), color = c.muted)
                     BasicTextField(
@@ -130,7 +130,7 @@ private fun CardRow(card: Card, onClick: () -> Unit) {
             CardAvatar(card)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(card.name, fontWeight = FontWeight.Bold, color = c.text, maxLines = 1, modifier = Modifier.weight(1f, fill = false))
+                    Text(card.name, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = c.text, maxLines = 1, modifier = Modifier.weight(1f, fill = false))
                     cardMeta(card)?.let { Text("· $it", color = c.muted, maxLines = 1) }
                 }
                 Text(listOfNotNull(card.subtitle, kindLabel(card)).joinToString(" · "), color = c.muted, fontSize = 14.sp, maxLines = 1)

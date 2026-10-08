@@ -20,10 +20,10 @@
     <string name="add_scan">Scanner un code-barres</string>
     <string name="close">Fermer</string>
     <string name="cancel">Annuler</string>
-    <string name="save">OK</string>
+    <string name="save">Enregistrer</string>
     <string name="delete">Supprimer</string>
     <string name="delete_title">Supprimer « %1$s » ?</string>
-    <string name="delete_text">La carte et ses fichiers seront supprimés du téléphone.</string>
+    <string name="delete_text">La carte et ses fichiers seront supprimés du téléphone</string>
 
     <string name="empty_title">La pile est vide</string>
     <string name="empty_tickets_title">Pas encore de billets</string>
@@ -59,6 +59,7 @@
     <string name="edit_name_placeholder">Nom</string>
     <string name="edit_subtitle">Sous-titre</string>
     <string name="edit_subtitle_hint">Par exemple, un café</string>
+    <string name="edit_kind">Type</string>
     <string name="edit_number">Numéro de carte</string>
     <string name="edit_format">Format du code-barres</string>
     <string name="edit_format_auto">Auto</string>
@@ -79,6 +80,7 @@
     <string name="import_failed">Impossible d’ouvrir le fichier .pkpass</string>
     <string name="import_many">Cartes ajoutées : %1$d</string>
     <string name="update_done">Le pass a été mis à jour</string>
+    <string name="update_was">%1$s (avant : %2$s)</string>
     <string name="update_same">Aucun changement</string>
     <string name="update_failed">Impossible de mettre à jour le pass</string>
     <string name="updates_channel">Mises à jour des pass</string>

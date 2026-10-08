@@ -22,10 +22,10 @@
     <string name="add_scan">Scan a barcode</string>
     <string name="close">Close</string>
     <string name="cancel">Cancel</string>
-    <string name="save">Done</string>
+    <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="delete_title">Delete “%1$s”?</string>
-    <string name="delete_text">The card and its files will be removed from the phone.</string>
+    <string name="delete_text">The card and its files will be removed from the phone</string>
 
     <string name="empty_title">The stack is empty</string>
     <string name="empty_tickets_title">No tickets yet</string>
@@ -61,6 +61,7 @@
     <string name="edit_name_placeholder">Name</string>
     <string name="edit_subtitle">Subtitle</string>
     <string name="edit_subtitle_hint">For example, a coffee shop</string>
+    <string name="edit_kind">Type</string>
     <string name="edit_number">Card number</string>
     <string name="edit_format">Barcode format</string>
     <string name="edit_format_auto">Auto</string>
@@ -81,6 +82,7 @@
     <string name="import_failed">Couldn’t open the .pkpass file</string>
     <string name="import_many">Cards added: %1$d</string>
     <string name="update_done">The pass was updated</string>
+    <string name="update_was">%1$s (was %2$s)</string>
     <string name="update_same">No changes</string>
     <string name="update_failed">Couldn’t update the pass</string>
     <string name="updates_channel">Pass updates</string>

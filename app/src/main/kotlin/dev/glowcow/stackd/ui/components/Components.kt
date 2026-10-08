@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -107,6 +109,11 @@ fun rememberFileBitmap(path: String?, maxSize: Int = 1600, version: Any? = null)
 
 val CardShape = RoundedCornerShape(16.dp)
 
+/** A barcode sits on light paper in any theme, so a scanner can read it. */
+val BarcodePaper = Color(0xFFFAF9F5)
+val BarcodeInk = Color(0xFF141413)
+val BarcodeNote = Color(0xFF66655F)
+
 /** Front of a card as seen in the stack. */
 @Composable
 fun CardFace(
@@ -172,7 +179,7 @@ private fun BarcodeStrip(card: Card) {
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(Color(0xFFFAF9F5))
+            .background(BarcodePaper)
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -186,7 +193,7 @@ private fun BarcodeStrip(card: Card) {
         if (format.is2d) Spacer(Modifier.weight(1f))
         Text(
             card.maskedNumber.orEmpty(),
-            color = Color(0xFF141413),
+            color = BarcodeInk,
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,
             maxLines = 1,
@@ -237,9 +244,28 @@ fun IconButton48(
     onClick: () -> Unit,
 ) {
     Box(
-        Modifier.size(48.dp).clip(RoundedCornerShape(24.dp)).clickable(role = Role.Button, onClick = onClick),
+        Modifier.size(48.dp).clip(CircleShape).clickable(role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Icon(icon, description, tint = tint, modifier = Modifier.size(size))
+    }
+}
+
+/** The primary action of a page: a dark pill with a light label, 48 dp to touch. */
+@Composable
+fun PillButton(label: String, enabled: Boolean = true, onClick: () -> Unit) {
+    val c = StackdTheme.colors
+    Box(
+        Modifier.heightIn(min = 48.dp).clip(CircleShape).clickable(enabled = enabled, role = Role.Button, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            label,
+            color = if (enabled) c.bg else c.muted,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            maxLines = 1,
+            modifier = Modifier.clip(CircleShape).background(if (enabled) c.text else c.chip).padding(horizontal = 16.dp, vertical = 9.dp),
+        )
     }
 }

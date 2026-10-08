@@ -31,7 +31,7 @@ object StackdIcons {
             }
         }.build()
 
-    val Cards = icon("cards", stroke = listOf("M7 6.5h11.5A2.5 2.5 0 0 1 21 9v7.5"), fill = listOf(roundRect(3f, 9f, 15f, 11f, 2.5f)), width = 2f)
+    val Cards = icon("cards", stroke = listOf("M7 6.5h11.5A2.5 2.5 0 0 1 21 9v7.5"), fill = listOf(roundRect(3f, 9f, 15f, 11f, 2.5f)))
     val Search = icon("search", listOf(circle(11f, 11f, 6.5f), "M16 16l4.5 4.5"))
     val Scan = icon("scan", listOf("M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M7 12h10"))
     val Settings = icon("settings", listOf("M4 7h9M17 7h3M4 17h3M11 17h9", circle(15f, 7f, 2f), circle(9f, 17f, 2f)))

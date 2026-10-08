@@ -20,10 +20,10 @@
     <string name="add_scan">Сканаваць штрыхкод</string>
     <string name="close">Закрыць</string>
     <string name="cancel">Скасаваць</string>
-    <string name="save">Гатова</string>
+    <string name="save">Захаваць</string>
     <string name="delete">Выдаліць</string>
     <string name="delete_title">Выдаліць «%1$s»?</string>
-    <string name="delete_text">Карта і яе файлы будуць выдалены з тэлефона.</string>
+    <string name="delete_text">Карта і яе файлы будуць выдалены з тэлефона</string>
 
     <string name="empty_title">Стос пусты</string>
     <string name="empty_tickets_title">Білетаў пакуль няма</string>
@@ -59,6 +59,7 @@
     <string name="edit_name_placeholder">Назва</string>
     <string name="edit_subtitle">Падзагаловак</string>
     <string name="edit_subtitle_hint">Напрыклад, кавярня</string>
+    <string name="edit_kind">Тып</string>
     <string name="edit_number">Нумар карты</string>
     <string name="edit_format">Фармат штрыхкода</string>
     <string name="edit_format_auto">Аўта</string>
@@ -79,6 +80,7 @@
     <string name="import_failed">Не атрымалася адкрыць файл .pkpass</string>
     <string name="import_many">Дададзена карт: %1$d</string>
     <string name="update_done">Пас абноўлены</string>
+    <string name="update_was">%1$s (было %2$s)</string>
     <string name="update_same">Змен няма</string>
     <string name="update_failed">Не атрымалася абнавіць пас</string>
     <string name="updates_channel">Абнаўленні пасаў</string>

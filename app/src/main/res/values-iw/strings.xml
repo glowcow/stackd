@@ -20,10 +20,10 @@
     <string name="add_scan">סריקת ברקוד</string>
     <string name="close">סגירה</string>
     <string name="cancel">ביטול</string>
-    <string name="save">סיום</string>
+    <string name="save">שמירה</string>
     <string name="delete">מחיקה</string>
     <string name="delete_title">למחוק את “%1$s”?</string>
-    <string name="delete_text">הכרטיס והקבצים שלו יוסרו מהטלפון.</string>
+    <string name="delete_text">הכרטיס והקבצים שלו יוסרו מהטלפון</string>
 
     <string name="empty_title">הערימה ריקה</string>
     <string name="empty_tickets_title">עדיין אין כרטיסי כניסה</string>
@@ -59,6 +59,7 @@
     <string name="edit_name_placeholder">שם</string>
     <string name="edit_subtitle">כותרת משנה</string>
     <string name="edit_subtitle_hint">לדוגמה, בית קפה</string>
+    <string name="edit_kind">סוג</string>
     <string name="edit_number">מספר הכרטיס</string>
     <string name="edit_format">סוג הברקוד</string>
     <string name="edit_format_auto">אוטומטי</string>
@@ -79,6 +80,7 @@
     <string name="import_failed">לא ניתן היה לפתוח את קובץ ‎.pkpass</string>
     <string name="import_many">כרטיסים שנוספו: %1$d</string>
     <string name="update_done">הכרטיס עודכן</string>
+    <string name="update_was">%1$s (קודם %2$s)</string>
     <string name="update_same">אין שינויים</string>
     <string name="update_failed">לא ניתן היה לעדכן את הכרטיס</string>
     <string name="updates_channel">עדכוני כרטיסים</string>

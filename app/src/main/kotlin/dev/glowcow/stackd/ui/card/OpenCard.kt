@@ -14,20 +14,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -52,6 +45,12 @@ import dev.glowcow.stackd.data.Card
 import dev.glowcow.stackd.pkpass.FieldSection
 import dev.glowcow.stackd.pkpass.PassField
 import dev.glowcow.stackd.ui.components.BarcodeImage
+import dev.glowcow.stackd.ui.components.BarcodeInk
+import dev.glowcow.stackd.ui.components.BarcodeNote
+import dev.glowcow.stackd.ui.components.Group
+import dev.glowcow.stackd.ui.components.GroupDivider
+import dev.glowcow.stackd.ui.components.GroupRow
+import dev.glowcow.stackd.ui.components.GroupSheet
 import dev.glowcow.stackd.ui.components.CardTitleRow
 import dev.glowcow.stackd.ui.components.cardMeta
 import dev.glowcow.stackd.ui.components.rememberFileBitmap
@@ -125,7 +124,7 @@ private fun BarcodeBlock(card: Card, bright: Boolean) {
         Modifier
             .fillMaxWidth()
             .padding(top = 4.dp)
-            .background(Color.White, RoundedCornerShape(12.dp))
+            .background(Color.White, RoundedCornerShape(10.dp))
             .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -133,7 +132,7 @@ private fun BarcodeBlock(card: Card, bright: Boolean) {
         val value = card.barcodeValue
         val format = card.barcodeFormat
         if (value == null || format == null) {
-            Text(stringResource(R.string.no_barcode), color = Color(0xFF66655F), textAlign = TextAlign.Center)
+            Text(stringResource(R.string.no_barcode), color = BarcodeNote, textAlign = TextAlign.Center)
             return@Column
         }
         val size = when {
@@ -145,7 +144,7 @@ private fun BarcodeBlock(card: Card, bright: Boolean) {
         (card.barcodeAltText ?: value.takeIf { it.length <= 40 })?.let {
             Text(
                 it,
-                color = Color(0xFF141413),
+                color = BarcodeInk,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 letterSpacing = if (format.is2d) 0.sp else 2.sp,
@@ -154,7 +153,7 @@ private fun BarcodeBlock(card: Card, bright: Boolean) {
         }
         Text(
             if (bright) stringResource(R.string.barcode_bright, format.label) else format.label,
-            color = Color(0xFF66655F),
+            color = BarcodeNote,
             fontSize = 12.sp,
         )
     }
@@ -203,42 +202,32 @@ private fun RowScope.Action(icon: ImageVector, label: String, busy: Boolean = fa
     }
 }
 
-/** Back of the card: pass back fields, dates, note, and delete. */
-@OptIn(ExperimentalMaterial3Api::class)
+/** Back of the card: pass back fields, dates, note, and delete, which asks first in a sheet of its own. */
 @Composable
 fun CardDetailsSheet(card: Card, onDismiss: () -> Unit, onDelete: () -> Unit) {
     val c = StackdTheme.colors
     var confirm by remember { mutableStateOf(false) }
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = c.bg) {
-        Column(Modifier.verticalScroll(rememberScrollState()).navigationBarsPadding()) {
-            Text(card.name, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = c.text, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-            InfoRows(card)
-            Box(Modifier.fillMaxWidth().height(1.dp).background(c.line))
-            Row(
-                Modifier.fillMaxWidth().clickable { confirm = true }.padding(horizontal = 16.dp, vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Icon(StackdIcons.Trash, null, tint = c.accent, modifier = Modifier.size(20.dp))
-                Text(stringResource(R.string.delete), color = c.accent, fontWeight = FontWeight.SemiBold)
-            }
-            Spacer(Modifier.height(16.dp))
-        }
-    }
+    // Set by the delete row, so the sheet that slides away gives way to the question.
+    var asking by remember { mutableStateOf(false) }
     if (confirm) {
-        AlertDialog(
-            onDismissRequest = { confirm = false },
-            title = { Text(stringResource(R.string.delete_title, card.name)) },
-            text = { Text(stringResource(R.string.delete_text)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    confirm = false
-                    onDelete()
-                }) { Text(stringResource(R.string.delete), color = c.accent) }
-            },
-            dismissButton = { TextButton(onClick = { confirm = false }) { Text(stringResource(R.string.cancel), color = c.text) } },
-            containerColor = c.bg,
-        )
+        GroupSheet(stringResource(R.string.delete_title, card.name), onDismiss) { pick ->
+            Text(stringResource(R.string.delete_text), color = c.muted, fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 14.dp))
+            Group { GroupRow(stringResource(R.string.delete), icon = StackdIcons.Trash, onClick = { pick(onDelete) }, trailing = {}) }
+        }
+    } else {
+        GroupSheet(card.name, onDismiss = { if (asking) confirm = true else onDismiss() }) { pick ->
+            Group { InfoRows(card) }
+            Group(Modifier.padding(top = 12.dp)) {
+                GroupRow(
+                    stringResource(R.string.delete),
+                    icon = StackdIcons.Trash,
+                    onClick = {
+                        asking = true
+                        pick {}
+                    },
+                )
+            }
+        }
     }
 }
 
@@ -253,21 +242,16 @@ private fun InfoRows(card: Card) {
         add(stringResource(R.string.info_added) to "${sourceLabel(card.source)} · ${relativeDate(card.createdAt)}")
         card.note?.takeIf { it.isNotBlank() }?.let { add(stringResource(R.string.info_note) to it) }
     }
-    rows.forEach { (label, value) ->
-        Box(Modifier.fillMaxWidth().height(1.dp).background(c.line))
-        val long = value.length > 32 || value.contains('\n') || label.isEmpty()
-        val m = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp)
-        if (long) {
-            Column(m, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                if (label.isNotEmpty()) Text(label, color = c.muted)
-                Text(value, color = c.text)
+    rows.forEachIndexed { i, (label, value) ->
+        if (i > 0) GroupDivider()
+        // A long value gets the full width under its label.
+        if (value.length > 24 || value.contains('\n') || label.isEmpty()) {
+            Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                if (label.isNotEmpty()) Text(label, color = c.muted, fontSize = 13.sp)
+                Text(value, color = c.text, fontSize = 15.sp)
             }
         } else {
-            Row(m, horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(label, color = c.muted, modifier = Modifier.weight(1f, fill = false))
-                Spacer(Modifier.size(12.dp))
-                Text(value, color = c.text, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.End)
-            }
+            GroupRow(label, value = value)
         }
     }
 }

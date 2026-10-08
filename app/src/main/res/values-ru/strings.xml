@@ -20,10 +20,10 @@
     <string name="add_scan">Сканировать штрихкод</string>
     <string name="close">Закрыть</string>
     <string name="cancel">Отмена</string>
-    <string name="save">Готово</string>
+    <string name="save">Сохранить</string>
     <string name="delete">Удалить</string>
     <string name="delete_title">Удалить «%1$s»?</string>
-    <string name="delete_text">Карта и её файлы будут удалены с телефона.</string>
+    <string name="delete_text">Карта и её файлы будут удалены с телефона</string>
 
     <string name="empty_title">Стопка пока пустая</string>
     <string name="empty_tickets_title">Билетов пока нет</string>
@@ -59,6 +59,7 @@
     <string name="edit_name_placeholder">Название</string>
     <string name="edit_subtitle">Подпись</string>
     <string name="edit_subtitle_hint">Например, кофейня</string>
+    <string name="edit_kind">Тип</string>
     <string name="edit_number">Номер карты</string>
     <string name="edit_format">Формат штрихкода</string>
     <string name="edit_format_auto">Авто</string>
@@ -79,6 +80,7 @@
     <string name="import_failed">Не получилось открыть файл .pkpass</string>
     <string name="import_many">Добавлено карт: %1$d</string>
     <string name="update_done">Пасс обновлён</string>
+    <string name="update_was">%1$s (было %2$s)</string>
     <string name="update_same">Изменений нет</string>
     <string name="update_failed">Не получилось обновить пасс</string>
     <string name="updates_channel">Обновления пассов</string>

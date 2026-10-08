@@ -20,10 +20,10 @@
     <string name="add_scan">Barcode scannen</string>
     <string name="close">Schließen</string>
     <string name="cancel">Abbrechen</string>
-    <string name="save">Fertig</string>
+    <string name="save">Speichern</string>
     <string name="delete">Löschen</string>
     <string name="delete_title">„%1$s“ löschen?</string>
-    <string name="delete_text">Die Karte und ihre Dateien werden vom Telefon entfernt.</string>
+    <string name="delete_text">Die Karte und ihre Dateien werden vom Telefon entfernt</string>
 
     <string name="empty_title">Der Stapel ist leer</string>
     <string name="empty_tickets_title">Noch keine Tickets</string>
@@ -59,6 +59,7 @@
     <string name="edit_name_placeholder">Name</string>
     <string name="edit_subtitle">Untertitel</string>
     <string name="edit_subtitle_hint">Zum Beispiel ein Café</string>
+    <string name="edit_kind">Typ</string>
     <string name="edit_number">Kartennummer</string>
     <string name="edit_format">Barcode-Format</string>
     <string name="edit_format_auto">Automatisch</string>
@@ -79,6 +80,7 @@
     <string name="import_failed">Die .pkpass-Datei konnte nicht geöffnet werden</string>
     <string name="import_many">Hinzugefügte Karten: %1$d</string>
     <string name="update_done">Der Pass wurde aktualisiert</string>
+    <string name="update_was">%1$s (vorher %2$s)</string>
     <string name="update_same">Keine Änderungen</string>
     <string name="update_failed">Der Pass konnte nicht aktualisiert werden</string>
     <string name="updates_channel">Pass-Aktualisierungen</string>

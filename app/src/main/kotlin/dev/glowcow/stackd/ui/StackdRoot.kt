@@ -1,6 +1,7 @@
 package dev.glowcow.stackd.ui
 
 import android.app.Activity
+import android.graphics.drawable.ColorDrawable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -16,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -80,9 +82,12 @@ fun StackdRoot(openCard: Flow<String>, openSettings: Flow<Unit>) {
 
     // Status bar icons follow the theme, except over the always-dark scanner.
     val lightIcons = !StackdTheme.colors.isDark && backStack.lastOrNull() !is ScannerRoute
+    val ground = StackdTheme.colors.bg
     val view = LocalView.current
     SideEffect {
         val window = (view.context as? Activity)?.window ?: return@SideEffect
+        // Two pages cross-fading let the window show through; it has to be the theme's ground, not the system's.
+        window.setBackgroundDrawable(ColorDrawable(ground.toArgb()))
         WindowCompat.getInsetsController(window, view).apply {
             isAppearanceLightStatusBars = lightIcons
             isAppearanceLightNavigationBars = lightIcons
