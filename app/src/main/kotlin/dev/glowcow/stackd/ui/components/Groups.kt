@@ -1,5 +1,8 @@
 package dev.glowcow.stackd.ui.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,8 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -38,9 +39,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -134,15 +145,37 @@ fun GroupSheet(title: String, onDismiss: () -> Unit, content: @Composable Column
 /** A row of a [Group] that turns a setting on and off; a tap anywhere on it flips the switch. */
 @Composable
 fun SwitchRow(title: String, subtitle: String, checked: Boolean, onChange: (Boolean) -> Unit) {
-    val c = StackdTheme.colors
-    GroupRow(title, subtitle = subtitle, onClick = { onChange(!checked) }, trailing = {
-        Switch(
-            checked = checked,
-            onCheckedChange = onChange,
-            colors = SwitchDefaults.colors(checkedTrackColor = c.accent, uncheckedTrackColor = c.chip, uncheckedBorderColor = c.line),
-        )
-    })
+    GroupRow(title, subtitle = subtitle, onClick = { onChange(!checked) }, trailing = { SwitchMark(checked) })
 }
+
+/** The switch itself: track, border and thumb ride one fraction, so off mirrors on. */
+@Composable
+private fun SwitchMark(checked: Boolean) {
+    val c = StackdTheme.colors
+    val on by animateFloatAsState(if (checked) 1f else 0f, tween(SWITCH_MS), label = "switch")
+    val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    Canvas(
+        Modifier.size(52.dp, 32.dp).semantics {
+            role = Role.Switch
+            toggleableState = ToggleableState(checked)
+        },
+    ) {
+        val r = size.height / 2
+        val edge = 2.dp.toPx()
+        drawRoundRect(lerp(c.chip, c.accent, on), cornerRadius = CornerRadius(r))
+        drawRoundRect(
+            c.line.copy(alpha = 1f - on),
+            Offset(edge / 2, edge / 2),
+            Size(size.width - edge, size.height - edge),
+            CornerRadius(r - edge / 2),
+            Stroke(edge),
+        )
+        val x = r + (size.width - size.height) * (if (rtl) 1f - on else on)
+        drawCircle(lerp(c.line, c.onAccent, on), (8 + 4 * on).dp.toPx(), Offset(x, r))
+    }
+}
+
+private const val SWITCH_MS = 200
 
 /**
  * A row of a [Group] to type into: the [label] stays above the text. [secret] hides what is typed;
