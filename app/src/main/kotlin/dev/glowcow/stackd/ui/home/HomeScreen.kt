@@ -68,7 +68,6 @@ import dev.glowcow.stackd.ui.card.CardActions
 import dev.glowcow.stackd.ui.card.CardDetailsSheet
 import dev.glowcow.stackd.ui.card.ScreenBrightness
 import dev.glowcow.stackd.ui.components.StackdLogo
-import dev.glowcow.stackd.ui.components.GlassLine
 import dev.glowcow.stackd.ui.components.TabScreen
 import dev.glowcow.stackd.ui.components.TopTab
 import dev.glowcow.stackd.ui.theme.StackdIcons
@@ -195,6 +194,7 @@ fun HomeScreen(
         TopTab.CARDS,
         onTab,
         ground = c.bg,
+        edge = true,
         header = {
             Box(Modifier.graphicsLayer { alpha = 1f - wallet.progress }) {
                 FilterTabs(pager) { if (!wallet.isOpen) scope.launch { pager.animateScrollToPage(it) } }
@@ -335,7 +335,6 @@ private fun FilterTabs(pager: PagerState, onSelect: (Int) -> Unit) {
                     .background(c.accent),
             )
         }
-        GlassLine()
     }
 }
 

@@ -146,7 +146,8 @@ default *classic* scheme is neutral grey — light `#FAFAFA` / dark `#161616`
 backgrounds, accent `#1F6FEB`; the *warm* scheme of the original design has
 `#FAF9F5` / `#1A1A18` and accent `#D97757`. Card colours start from
 `#6A9BCC #788C5D #CBCADB #E3DACC #BCD1CA #141413`. UI font: Arimo, which
-covers every language of the app. The header and the tab bar are frosted
+covers every language of the app, with page titles in Cormorant Garamond.
+The header and the tab bar are frosted
 glass: the page scrolls under them and shows through, blurred.
 
 ## License
@@ -158,5 +159,6 @@ As an additional permission under section 7 of the GPL, the app may be
 combined and distributed with Google's ML Kit barcode scanning library, which
 is not free software.
 
-Arimo is bundled under the SIL Open Font License 1.1 — see
-[`licenses/Arimo-OFL.txt`](licenses/Arimo-OFL.txt).
+Arimo and Cormorant Garamond are bundled under the SIL Open Font License
+1.1 — see [`licenses/Arimo-OFL.txt`](licenses/Arimo-OFL.txt) and
+[`licenses/CormorantGaramond-OFL.txt`](licenses/CormorantGaramond-OFL.txt).

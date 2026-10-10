@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -31,10 +31,7 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.glowcow.stackd.ui.theme.StackdTheme
 
 /**
@@ -53,6 +50,8 @@ fun DetailScreen(
     val c = StackdTheme.colors
     val page = rememberGraphicsLayer()
     var header by remember { mutableIntStateOf(0) }
+    val scroll = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scroll.value > 0 } }
     Box(Modifier.fillMaxSize().background(c.groupBg).imePadding()) {
         Box(
             Modifier.fillMaxSize().drawWithContent {
@@ -63,8 +62,8 @@ fun DetailScreen(
             Column(
                 Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(top = with(LocalDensity.current) { header.toDp() })
+                    .verticalScroll(scroll)
+                    .padding(top = with(LocalDensity.current) { header.toDp() } + HeaderGap)
                     .navigationBarsPadding()
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 16.dp),
@@ -72,28 +71,20 @@ fun DetailScreen(
                 content = content,
             )
         }
-        Row(
+        Column(
             Modifier
                 .fillMaxWidth()
                 .onSizeChanged { header = it.height }
                 .frosted(page, c.groupBg) { Offset.Zero }
                 .solid()
-                .statusBarsPadding()
-                .heightIn(min = 56.dp)
-                .padding(horizontal = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .statusBarsPadding(),
         ) {
-            IconButton48(leave, leaveLabel, onClick = onLeave)
-            Text(
-                title,
-                color = c.text,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f).padding(start = 4.dp, end = 8.dp),
-            )
-            actions()
+            Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                IconButton48(leave, leaveLabel, onClick = onLeave)
+                PageTitle(title, Modifier.weight(1f).padding(start = 4.dp, end = 8.dp))
+                actions()
+            }
+            HeaderLine(shown = scrolled)
         }
     }
 }

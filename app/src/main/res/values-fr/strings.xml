@@ -120,6 +120,7 @@
     <string name="settings_version">Version</string>
     <string name="settings_licence">Licence</string>
     <string name="settings_font">Police</string>
+    <string name="settings_title_font">Police des titres</string>
     <string name="settings_app_update">Rechercher les mises à jour de l’app</string>
     <string name="settings_app_update_hint">Une fois par semaine, dans les versions publiées sur GitHub</string>
     <string name="app_update_channel">Mises à jour de l’app</string>

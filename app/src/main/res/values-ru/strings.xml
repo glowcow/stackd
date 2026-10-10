@@ -120,6 +120,7 @@
     <string name="settings_version">Версия</string>
     <string name="settings_licence">Лицензия</string>
     <string name="settings_font">Шрифт</string>
+    <string name="settings_title_font">Шрифт заголовков</string>
     <string name="settings_app_update">Проверять обновления приложения</string>
     <string name="settings_app_update_hint">Раз в неделю, в релизах на GitHub</string>
     <string name="app_update_channel">Обновления приложения</string>

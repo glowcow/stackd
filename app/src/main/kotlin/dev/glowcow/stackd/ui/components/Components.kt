@@ -39,9 +39,12 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,8 +52,10 @@ import dev.glowcow.stackd.R
 import dev.glowcow.stackd.barcode.BarcodeFormat
 import dev.glowcow.stackd.barcode.BarcodeRenderer
 import dev.glowcow.stackd.data.Card
+import dev.glowcow.stackd.ui.theme.AppFont
 import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.ui.theme.StackdTheme
+import dev.glowcow.stackd.ui.theme.TitleFont
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -212,7 +217,12 @@ fun CardAvatar(card: Card, size: Dp = 44.dp) {
     }
 }
 
-enum class TopTab { CARDS, SEARCH, SCANNER, SETTINGS }
+enum class TopTab(val icon: ImageVector, val label: Int) {
+    CARDS(StackdIcons.Cards, R.string.tab_cards),
+    SEARCH(StackdIcons.Search, R.string.tab_search),
+    SCANNER(StackdIcons.Scan, R.string.tab_scanner),
+    SETTINGS(StackdIcons.Settings, R.string.tab_settings),
+}
 
 @Composable
 fun BottomBar(current: TopTab, onSelect: (TopTab) -> Unit) {
@@ -220,20 +230,43 @@ fun BottomBar(current: TopTab, onSelect: (TopTab) -> Unit) {
     Column(Modifier.navigationBarsPadding()) {
         GlassLine()
         Row(Modifier.fillMaxWidth().height(64.dp), verticalAlignment = Alignment.CenterVertically) {
-            val items = listOf(
-                Triple(TopTab.CARDS, StackdIcons.Cards, R.string.tab_cards),
-                Triple(TopTab.SEARCH, StackdIcons.Search, R.string.tab_search),
-                Triple(TopTab.SCANNER, StackdIcons.Scan, R.string.tab_scanner),
-                Triple(TopTab.SETTINGS, StackdIcons.Settings, R.string.tab_settings),
-            )
-            for ((tab, icon, label) in items) {
+            for (tab in TopTab.entries) {
                 Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    IconButton48(icon, stringResource(label), tint = if (tab == current) c.text else c.muted, size = 26.dp) { onSelect(tab) }
+                    IconButton48(tab.icon, stringResource(tab.label), tint = if (tab == current) c.text else c.muted, size = 26.dp) { onSelect(tab) }
                 }
             }
         }
     }
 }
+
+/**
+ * The title of a page, on one line: Cormorant Garamond, [large] on a tab and the size a title was
+ * before in a row with buttons; the app's own bold face where the language is Hebrew, which that face lacks.
+ */
+@Composable
+fun PageTitle(text: String, modifier: Modifier = Modifier, large: Boolean = false) {
+    val own = LocalConfiguration.current.locales[0].language.let { it == "iw" || it == "he" }
+    Text(
+        text,
+        modifier,
+        color = StackdTheme.colors.text,
+        fontFamily = if (own) AppFont else TitleFont,
+        fontSize = when {
+            own -> 22.sp
+            large -> TAB_TITLE
+            else -> PAGE_TITLE
+        },
+        fontWeight = if (own) FontWeight.Bold else FontWeight.Normal,
+        style = TextStyle(fontFeatureSettings = "lnum"),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
+}
+
+private val TAB_TITLE = 36.sp
+
+// Cormorant's capitals are lower than Arimo's: at this size they stand as tall as a 22 sp title did.
+private val PAGE_TITLE = 25.sp
 
 @Composable
 fun IconButton48(
@@ -265,7 +298,8 @@ fun PillButton(label: String, enabled: Boolean = true, onClick: () -> Unit) {
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
             maxLines = 1,
-            modifier = Modifier.clip(CircleShape).background(if (enabled) c.text else c.chip).padding(horizontal = 16.dp, vertical = 9.dp),
+            // One that cannot be used takes the colour of a block: a chip is lost on the ground of a grouped page.
+            modifier = Modifier.clip(CircleShape).background(if (enabled) c.text else c.group).padding(horizontal = 16.dp, vertical = 9.dp),
         )
     }
 }

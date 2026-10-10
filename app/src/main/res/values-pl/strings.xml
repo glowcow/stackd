@@ -120,6 +120,7 @@
     <string name="settings_version">Wersja</string>
     <string name="settings_licence">Licencja</string>
     <string name="settings_font">Czcionka</string>
+    <string name="settings_title_font">Czcionka nagłówków</string>
     <string name="settings_app_update">Sprawdzaj aktualizacje aplikacji</string>
     <string name="settings_app_update_hint">Raz w tygodniu, w wydaniach na GitHubie</string>
     <string name="app_update_channel">Aktualizacje aplikacji</string>

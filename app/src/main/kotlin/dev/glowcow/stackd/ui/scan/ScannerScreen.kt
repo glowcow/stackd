@@ -49,7 +49,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,6 +60,7 @@ import dev.glowcow.stackd.container
 import dev.glowcow.stackd.data.CardSource
 import dev.glowcow.stackd.ui.CardDraft
 import dev.glowcow.stackd.ui.components.IconButton48
+import dev.glowcow.stackd.ui.components.PageTitle
 import dev.glowcow.stackd.ui.components.PillButton
 import dev.glowcow.stackd.ui.theme.LocalDarkColors
 import dev.glowcow.stackd.ui.theme.StackdColorsProvider
@@ -130,14 +130,7 @@ fun ScannerScreen(
     Column(Modifier.fillMaxSize().background(c.bg).statusBarsPadding().navigationBarsPadding()) {
         Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton48(StackdIcons.Close, stringResource(R.string.close), onClick = onClose)
-            Text(
-                stringResource(if (photo) R.string.add_photo else R.string.tab_scanner),
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp,
-                color = c.text,
-                maxLines = 1,
-                modifier = Modifier.weight(1f).padding(start = 4.dp, end = 8.dp),
-            )
+            PageTitle(stringResource(if (photo) R.string.add_photo else R.string.tab_scanner), Modifier.weight(1f).padding(start = 4.dp, end = 8.dp))
             IconButton48(
                 if (torch) StackdIcons.FlashOn else StackdIcons.Flash,
                 stringResource(R.string.scan_flash),

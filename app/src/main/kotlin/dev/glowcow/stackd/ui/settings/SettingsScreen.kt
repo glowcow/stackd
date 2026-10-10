@@ -43,7 +43,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -175,20 +174,7 @@ fun SettingsScreen(
         locales.applicationLocales = tag?.let { LocaleList.forLanguageTags(it) } ?: LocaleList.getEmptyLocaleList()
     }
 
-    TabScreen(
-        TopTab.SETTINGS,
-        onTab,
-        ground = c.groupBg,
-        header = {
-            Text(
-                stringResource(R.string.tab_settings),
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = c.text,
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp),
-            )
-        },
-    ) { top, bottom ->
+    TabScreen(TopTab.SETTINGS, onTab) { top, bottom ->
         Column(
             Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(top = top, bottom = bottom + 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -268,6 +254,8 @@ fun SettingsScreen(
                 GroupRow(stringResource(R.string.settings_licence), value = "GPL-3.0-or-later")
                 GroupDivider()
                 GroupRow(stringResource(R.string.settings_font), value = "Arimo · SIL OFL 1.1")
+                GroupDivider()
+                GroupRow(stringResource(R.string.settings_title_font), value = "Cormorant Garamond · SIL OFL 1.1")
             }
         }
     }

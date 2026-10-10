@@ -120,6 +120,7 @@
     <string name="settings_version">Версія</string>
     <string name="settings_licence">Ліцэнзія</string>
     <string name="settings_font">Шрыфт</string>
+    <string name="settings_title_font">Шрыфт загалоўкаў</string>
     <string name="settings_app_update">Правяраць абнаўленні праграмы</string>
     <string name="settings_app_update_hint">Раз на тыдзень, у рэлізах на GitHub</string>
     <string name="app_update_channel">Абнаўленні праграмы</string>

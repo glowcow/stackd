@@ -120,6 +120,7 @@
     <string name="settings_version">גרסה</string>
     <string name="settings_licence">רישיון</string>
     <string name="settings_font">גופן</string>
+    <string name="settings_title_font">גופן הכותרות</string>
     <string name="settings_app_update">בדיקת עדכונים לאפליקציה</string>
     <string name="settings_app_update_hint">פעם בשבוע, בגרסאות שפורסמו ב-GitHub</string>
     <string name="app_update_channel">עדכוני האפליקציה</string>

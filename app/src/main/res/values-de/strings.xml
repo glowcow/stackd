@@ -120,6 +120,7 @@
     <string name="settings_version">Version</string>
     <string name="settings_licence">Lizenz</string>
     <string name="settings_font">Schrift</string>
+    <string name="settings_title_font">Schrift der Überschriften</string>
     <string name="settings_app_update">Nach App-Updates suchen</string>
     <string name="settings_app_update_hint">Einmal pro Woche, in den Releases auf GitHub</string>
     <string name="app_update_channel">App-Updates</string>

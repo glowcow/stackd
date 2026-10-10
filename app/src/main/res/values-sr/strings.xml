@@ -120,6 +120,7 @@
     <string name="settings_version">Верзија</string>
     <string name="settings_licence">Лиценца</string>
     <string name="settings_font">Фонт</string>
+    <string name="settings_title_font">Фонт наслова</string>
     <string name="settings_app_update">Проверавај ажурирања апликације</string>
     <string name="settings_app_update_hint">Једном недељно, у издањима на GitHub-у</string>
     <string name="app_update_channel">Ажурирања апликације</string>

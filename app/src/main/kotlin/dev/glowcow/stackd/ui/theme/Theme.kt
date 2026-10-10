@@ -98,6 +98,14 @@ val AppFont = FontFamily(
     },
 )
 
+/**
+ * Cormorant Garamond, the face of page titles, at its medium weight: a phone draws its hairlines
+ * thinner than a page of samples does. It has no Hebrew: a title in Hebrew stays in [AppFont].
+ */
+val TitleFont = FontFamily(
+    Font(R.font.cormorant_garamond, FontWeight.Normal, variationSettings = FontVariation.Settings(FontVariation.weight(500))),
+)
+
 private val base = TextStyle(fontFamily = AppFont, fontSize = 15.sp)
 
 private val typography = Typography().let { t ->
