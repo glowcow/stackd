@@ -1,6 +1,6 @@
 package dev.glowcow.stackd.ui.components
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -28,6 +28,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -145,14 +146,20 @@ fun GroupSheet(title: String, onDismiss: () -> Unit, content: @Composable Column
 /** A row of a [Group] that turns a setting on and off; a tap anywhere on it flips the switch. */
 @Composable
 fun SwitchRow(title: String, subtitle: String, checked: Boolean, onChange: (Boolean) -> Unit) {
-    GroupRow(title, subtitle = subtitle, onClick = { onChange(!checked) }, trailing = { SwitchMark(checked) })
+    var tapped by remember { mutableStateOf(false) }
+    GroupRow(title, subtitle = subtitle, onClick = { tapped = true; onChange(!checked) }, trailing = { SwitchMark(checked, tapped) })
 }
 
-/** The switch itself: track, border and thumb ride one fraction, so off mirrors on. */
+/** The switch itself: track, border and thumb ride one fraction; it moves only after a tap, else it jumps. */
 @Composable
-private fun SwitchMark(checked: Boolean) {
+private fun SwitchMark(checked: Boolean, animate: Boolean) {
     val c = StackdTheme.colors
-    val on by animateFloatAsState(if (checked) 1f else 0f, tween(SWITCH_MS), label = "switch")
+    val fraction = remember { Animatable(if (checked) 1f else 0f) }
+    LaunchedEffect(checked) {
+        val target = if (checked) 1f else 0f
+        if (animate) fraction.animateTo(target, tween(SWITCH_MS)) else fraction.snapTo(target)
+    }
+    val on = fraction.value
     val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Canvas(
         Modifier.size(52.dp, 32.dp).semantics {
