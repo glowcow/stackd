@@ -88,7 +88,7 @@ fun GlassLine() {
 /** Keeps touches from reaching the page that shows through the glass. */
 fun Modifier.solid() = pointerInput(Unit) {}
 
-private const val GLASS_LINE = 0.12f
+const val GLASS_LINE = 0.12f
 
 private val FROST_BLUR = 20.dp
 

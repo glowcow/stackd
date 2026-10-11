@@ -9,7 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -32,8 +39,35 @@ data class StackdColors(
     val group: Color,
     val accent: Color = Color(0xFFD97757),
     val onAccent: Color = Color.White,
+    /** What cannot be taken back: deleting for good. */
+    val danger: Color = Color(0xFFFF3B30),
     val isDark: Boolean,
-)
+    /** The screen shows Display P3, and the bright colours are in it. */
+    val wide: Boolean = false,
+) {
+    /** A bright colour of the content, in Display P3 where the screen shows it. */
+    fun bright(color: Color): Color = if (wide) color.p3() else color
+
+    // Only the bright colours leave sRGB; grounds, text and lines lie inside it anyway.
+    internal fun widened() = copy(accent = accent.p3(), danger = danger.p3(), wide = true)
+}
+
+// The same channel numbers in Display P3: the more saturated colour.
+private fun Color.p3() = Color(red, green, blue, alpha, ColorSpaces.DisplayP3)
+
+/**
+ * Draws a text or an icon in [color] as it is: a text colour and an icon's tint are cut down to
+ * sRGB on their way to the paint, a rectangle laid over them is not.
+ */
+fun Modifier.inked(color: Color): Modifier =
+    if (color.colorSpace == ColorSpaces.Srgb) {
+        this
+    } else {
+        graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen).drawWithContent {
+            drawContent()
+            drawRect(color, blendMode = BlendMode.SrcIn)
+        }
+    }
 
 val LightColors = StackdColors(
     bg = Color(0xFFFAF9F5),
@@ -135,10 +169,11 @@ fun StackdTheme(mode: ThemeMode = ThemeMode.SYSTEM, palette: Palette = Palette.C
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
     }
+    val wide = LocalConfiguration.current.isScreenWideColorGamut
     val (light, night) = when (palette) {
         Palette.WARM -> LightColors to DarkColors
         Palette.CLASSIC -> ClassicLightColors to ClassicDarkColors
-    }
+    }.let { (light, night) -> if (wide) light.widened() to night.widened() else light to night }
     CompositionLocalProvider(LocalDarkColors provides night) {
         StackdColorsProvider(if (dark) night else light, content)
     }

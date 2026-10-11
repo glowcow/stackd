@@ -55,6 +55,7 @@ import dev.glowcow.stackd.data.Card
 import dev.glowcow.stackd.ui.theme.AppFont
 import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.ui.theme.StackdTheme
+import dev.glowcow.stackd.ui.theme.inked
 import dev.glowcow.stackd.ui.theme.TitleFont
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -227,14 +228,9 @@ enum class TopTab(val icon: ImageVector, val label: Int) {
 @Composable
 fun BottomBar(current: TopTab, onSelect: (TopTab) -> Unit) {
     val c = StackdTheme.colors
-    Column(Modifier.navigationBarsPadding()) {
-        GlassLine()
-        Row(Modifier.fillMaxWidth().height(64.dp), verticalAlignment = Alignment.CenterVertically) {
-            for (tab in TopTab.entries) {
-                Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    IconButton48(tab.icon, stringResource(tab.label), tint = if (tab == current) c.text else c.muted, size = 26.dp) { onSelect(tab) }
-                }
-            }
+    IslandIcons {
+        for (tab in TopTab.entries) {
+            IconButton48(tab.icon, stringResource(tab.label), tint = if (tab == current) c.text else c.muted, size = 24.dp) { onSelect(tab) }
         }
     }
 }
@@ -280,7 +276,7 @@ fun IconButton48(
         Modifier.size(48.dp).clip(CircleShape).clickable(role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, description, tint = tint, modifier = Modifier.size(size))
+        Icon(icon, description, tint = tint, modifier = Modifier.size(size).inked(tint))
     }
 }
 

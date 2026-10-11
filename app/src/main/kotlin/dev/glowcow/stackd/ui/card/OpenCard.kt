@@ -212,7 +212,7 @@ fun CardDetailsSheet(card: Card, onDismiss: () -> Unit, onDelete: () -> Unit) {
     if (confirm) {
         GroupSheet(stringResource(R.string.delete_title, card.name), onDismiss) { pick ->
             Text(stringResource(R.string.delete_text), color = c.muted, fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 14.dp))
-            Group { GroupRow(stringResource(R.string.delete), icon = StackdIcons.Trash, onClick = { pick(onDelete) }, trailing = {}) }
+            Group { GroupRow(stringResource(R.string.delete), titleColor = c.danger, icon = StackdIcons.Trash, iconTint = c.danger, onClick = { pick(onDelete) }, trailing = {}) }
         }
     } else {
         GroupSheet(card.name, onDismiss = { if (asking) confirm = true else onDismiss() }) { pick ->
@@ -221,6 +221,7 @@ fun CardDetailsSheet(card: Card, onDismiss: () -> Unit, onDelete: () -> Unit) {
                 GroupRow(
                     stringResource(R.string.delete),
                     icon = StackdIcons.Trash,
+                    iconTint = c.danger,
                     onClick = {
                         asking = true
                         pick {}

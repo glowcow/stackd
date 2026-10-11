@@ -147,8 +147,9 @@ backgrounds, accent `#1F6FEB`; the *warm* scheme of the original design has
 `#FAF9F5` / `#1A1A18` and accent `#D97757`. Card colours start from
 `#6A9BCC #788C5D #CBCADB #E3DACC #BCD1CA #141413`. UI font: Arimo, which
 covers every language of the app, with page titles in Cormorant Garamond.
-The header and the tab bar are frosted
-glass: the page scrolls under them and shows through, blurred.
+The header and the tab bar — an island floating at the bottom — are frosted
+glass: the page scrolls under them and shows through, blurred. Bright
+colours are drawn in Display P3 on a screen that shows it.
 
 ## License
 

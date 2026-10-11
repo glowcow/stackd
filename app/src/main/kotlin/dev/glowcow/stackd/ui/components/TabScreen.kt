@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -32,11 +33,12 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import dev.glowcow.stackd.ui.theme.StackdTheme
 
 /**
- * A tab's page: the content runs under the frosted header and tab bar and gets the heights they cover.
+ * A tab's page: the content runs under the frosted header and the island of tabs and gets the heights they cover.
  * The header is the tab's title with [trailing] at its end, or the page's own [header]; [floating] lies over it.
  * With [edge] the header always ends in the glass line: for a page that lies under it without scrolling.
  */
@@ -51,11 +53,10 @@ fun TabScreen(
     floating: @Composable BoxScope.(bottom: Dp) -> Unit = {},
     content: @Composable (top: Dp, bottom: Dp) -> Unit,
 ) {
-    val c = StackdTheme.colors
     val density = LocalDensity.current
     val page = rememberGraphicsLayer()
     var headerHeight by remember { mutableIntStateOf(0) }
-    val pageHeight = remember { mutableIntStateOf(0) }
+    var pageSize by remember { mutableStateOf(IntSize.Zero) }
     val barHeight = remember { mutableIntStateOf(0) }
     // How far the page has gone under the header, pixels: the header gets a line under it while that is more than nothing.
     var under by rememberSaveable { mutableFloatStateOf(0f) }
@@ -68,7 +69,7 @@ fun TabScreen(
             }
         }
     }
-    Box(Modifier.fillMaxSize().background(ground).onSizeChanged { pageHeight.intValue = it.height }.nestedScroll(scrolled)) {
+    Box(Modifier.fillMaxSize().background(ground).onSizeChanged { pageSize = it }.nestedScroll(scrolled)) {
         Box(
             Modifier.fillMaxSize().drawWithContent {
                 page.record { this@drawWithContent.drawContent() }
@@ -102,14 +103,6 @@ fun TabScreen(
             }
             if (edge) GlassLine() else HeaderLine(shown = under > 0f)
         }
-        Box(
-            Modifier
-                .align(Alignment.BottomCenter)
-                .onSizeChanged { barHeight.intValue = it.height }
-                .frosted(page, c.bg) { Offset(0f, (pageHeight.intValue - barHeight.intValue).toFloat()) }
-                .solid(),
-        ) {
-            BottomBar(tab, onTab)
-        }
+        Island(page, ground, { pageSize }, { barHeight.intValue = it }) { BottomBar(tab, onTab) }
     }
 }
