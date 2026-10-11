@@ -230,8 +230,7 @@ fun BottomBar(current: TopTab, onSelect: (TopTab) -> Unit) {
     val c = StackdTheme.colors
     IslandIcons {
         for (tab in TopTab.entries) {
-            // The app's own icons keep a wider margin in their box than mnt's: at 28 dp the glyphs are as large.
-            IconButton48(tab.icon, stringResource(tab.label), tint = if (tab == current) c.text else c.muted, size = 28.dp) { onSelect(tab) }
+            IconButton48(tab.icon, stringResource(tab.label), tint = if (tab == current) c.text else c.muted, size = 24.dp) { onSelect(tab) }
         }
     }
 }

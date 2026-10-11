@@ -146,7 +146,8 @@ default *classic* scheme is neutral grey — light `#FAFAFA` / dark `#161616`
 backgrounds, accent `#1F6FEB`; the *warm* scheme of the original design has
 `#FAF9F5` / `#1A1A18` and accent `#D97757`. Card colours start from
 `#6A9BCC #788C5D #CBCADB #E3DACC #BCD1CA #141413`. UI font: Arimo, which
-covers every language of the app, with page titles in Cormorant Garamond.
+covers every language of the app, with page titles in Cormorant Garamond;
+icons are Phosphor.
 The header and the tab bar — an island floating at the bottom — are frosted
 glass: the page scrolls under them and shows through, blurred. Bright
 colours are drawn in Display P3 on a screen that shows it.
@@ -162,4 +163,6 @@ is not free software.
 
 Arimo and Cormorant Garamond are bundled under the SIL Open Font License
 1.1 — see [`licenses/Arimo-OFL.txt`](licenses/Arimo-OFL.txt) and
-[`licenses/CormorantGaramond-OFL.txt`](licenses/CormorantGaramond-OFL.txt).
+[`licenses/CormorantGaramond-OFL.txt`](licenses/CormorantGaramond-OFL.txt). The icons are
+[Phosphor Icons](https://phosphoricons.com), MIT — see
+[`licenses/Phosphor-MIT.txt`](licenses/Phosphor-MIT.txt).

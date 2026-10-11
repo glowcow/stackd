@@ -253,6 +253,8 @@ fun SettingsScreen(
             Group {
                 GroupRow(stringResource(R.string.settings_licence), value = "GPL-3.0-or-later")
                 GroupDivider()
+                GroupRow(stringResource(R.string.settings_icons), value = "Phosphor · MIT")
+                GroupDivider()
                 GroupRow(stringResource(R.string.settings_font), value = "Arimo · SIL OFL 1.1")
                 GroupDivider()
                 GroupRow(stringResource(R.string.settings_title_font), value = "Cormorant Garamond · SIL OFL 1.1")

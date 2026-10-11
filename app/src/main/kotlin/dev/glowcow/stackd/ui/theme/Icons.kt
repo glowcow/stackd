@@ -2,54 +2,46 @@ package dev.glowcow.stackd.ui.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.unit.dp
 
-/** Line icons from the design mockups (24×24 viewport). */
+/**
+ * Phosphor icons (MIT): regular, bold for the few that act alone, filled for a state that is on.
+ * Each is the path data of the icon's SVG.
+ */
 object StackdIcons {
-    private fun circle(cx: Float, cy: Float, r: Float) =
-        "M${cx - r},${cy}a$r,$r 0 1,0 ${2 * r},0a$r,$r 0 1,0 ${-2 * r},0Z"
-
-    private fun roundRect(x: Float, y: Float, w: Float, h: Float, r: Float) =
-        "M${x + r},${y}h${w - 2 * r}a$r,$r 0 0 1 $r,${r}v${h - 2 * r}a$r,$r 0 0 1 ${-r},${r}h${-(w - 2 * r)}" +
-            "a$r,$r 0 0 1 ${-r},${-r}v${-(h - 2 * r)}a$r,$r 0 0 1 $r,${-r}Z"
-
-    private fun icon(name: String, stroke: List<String> = emptyList(), fill: List<String> = emptyList(), width: Float = 1.8f) =
-        ImageVector.Builder(name, 24.dp, 24.dp, 24f, 24f).apply {
-            fill.forEach { addPath(PathParser().parsePathString(it).toNodes(), fill = SolidColor(Color.Black)) }
-            stroke.forEach {
-                addPath(
-                    PathParser().parsePathString(it).toNodes(),
-                    stroke = SolidColor(Color.Black),
-                    strokeLineWidth = width,
-                    strokeLineCap = StrokeCap.Round,
-                    strokeLineJoin = StrokeJoin.Round,
-                )
-            }
+    // Phosphor draws on 256 with a wide margin; the viewport is cut to 224 so a glyph fills its box.
+    private fun icon(name: String, vararg paths: Pair<String, Float>) =
+        ImageVector.Builder(name, 24.dp, 24.dp, 224f, 224f).apply {
+            addGroup(translationX = -16f, translationY = -16f)
+            paths.forEach { (data, alpha) -> addPath(PathParser().parsePathString(data).toNodes(), fill = SolidColor(Color.Black), fillAlpha = alpha) }
+            clearGroup()
         }.build()
 
-    val Cards = icon("cards", stroke = listOf("M7 6.5h11.5A2.5 2.5 0 0 1 21 9v7.5"), fill = listOf(roundRect(3f, 9f, 15f, 11f, 2.5f)))
-    val Search = icon("search", listOf(circle(11f, 11f, 6.5f), "M16 16l4.5 4.5"))
-    val Scan = icon("scan", listOf("M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M7 12h10"))
-    val Settings = icon("settings", listOf("M4 7h9M17 7h3M4 17h3M11 17h9", circle(15f, 7f, 2f), circle(9f, 17f, 2f)))
-    val Plus = icon("plus", listOf("M12 5v14M5 12h14"), width = 2.2f)
-    val Back = icon("back", listOf("M19 12H5M11 6l-6 6 6 6"), width = 2f)
-    val Close = icon("close", listOf("M6 6l12 12M18 6L6 18"), width = 2f)
-    val More = icon("more", fill = listOf(circle(5f, 12f, 1.8f), circle(12f, 12f, 1.8f), circle(19f, 12f, 1.8f)))
-    val Flash = icon("flash", listOf("M13 3L5 13h6l-1 8 8-10h-6l1-8z"))
-    val FlashOn = icon("flash_on", fill = listOf("M13 3L5 13h6l-1 8 8-10h-6l1-8z"))
-    val Gallery = icon("gallery", listOf(roundRect(4f, 5f, 16f, 14f, 2f), "M4 16l5-5 4 4 2-2 5 5"))
-    val Share = icon("share", listOf("M12 15V4M8 8l4-4 4 4M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13"))
-    val Edit = icon("edit", listOf("M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"))
-    val Pin = icon("pin", listOf("M6 4h12v17l-6-4-6 4V4z"))
-    val Pinned = icon("pinned", fill = listOf("M6 4h12v17l-6-4-6 4V4z"))
-    val Trash = icon("trash", listOf("M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"))
-    val Chevron = icon("chevron", listOf("M9 5l7 7-7 7"))
-    val Check = icon("check", listOf("M5 12.5l4.5 4.5L19 7.5"), width = 2.2f)
-    val Camera = icon("camera", listOf("M4 8h3.5L9 6h6l1.5 2H20v11H4V8z", circle(12f, 13.5f, 3.2f)))
-    val Refresh = icon("refresh", listOf("M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5"))
-    val File = icon("file", listOf("M7 3h7l5 5v13H7V3zM14 3v5h5"))
+    val Cards = icon("cards", "M184,72H40A16,16,0,0,0,24,88V200a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V88A16,16,0,0,0,184,72Zm0,128H40V88H184V200ZM232,56V176a8,8,0,0,1-16,0V56H64a8,8,0,0,1,0-16H216A16,16,0,0,1,232,56Z" to 1.0f)
+    val Search = icon("search", "M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" to 1.0f)
+    val Scan = icon("scan", "M224,40V80a8,8,0,0,1-16,0V48H176a8,8,0,0,1,0-16h40A8,8,0,0,1,224,40ZM80,208H48V176a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H80a8,8,0,0,0,0-16Zm136-40a8,8,0,0,0-8,8v32H176a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V176A8,8,0,0,0,216,168ZM40,88a8,8,0,0,0,8-8V48H80a8,8,0,0,0,0-16H40a8,8,0,0,0-8,8V80A8,8,0,0,0,40,88ZM80,72h96a8,8,0,0,1,8,8v96a8,8,0,0,1-8,8H80a8,8,0,0,1-8-8V80A8,8,0,0,1,80,72Zm8,96h80V88H88Z" to 1.0f)
+    val Settings = icon("settings", "M40,88H73a32,32,0,0,0,62,0h81a8,8,0,0,0,0-16H135a32,32,0,0,0-62,0H40a8,8,0,0,0,0,16Zm64-24A16,16,0,1,1,88,80,16,16,0,0,1,104,64ZM216,168H199a32,32,0,0,0-62,0H40a8,8,0,0,0,0,16h97a32,32,0,0,0,62,0h17a8,8,0,0,0,0-16Zm-48,24a16,16,0,1,1,16-16A16,16,0,0,1,168,192Z" to 1.0f)
+    val Chevron = icon("chevron", "M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z" to 1.0f)
+
+    // The few that act alone are drawn heavier.
+    val Plus = icon("plus", "M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z" to 1.0f)
+    val Back = icon("back", "M228,128a12,12,0,0,1-12,12H69l51.52,51.51a12,12,0,0,1-17,17l-72-72a12,12,0,0,1,0-17l72-72a12,12,0,0,1,17,17L69,116H216A12,12,0,0,1,228,128Z" to 1.0f)
+    val Close = icon("close", "M208.49,191.51a12,12,0,0,1-17,17L128,145,64.49,208.49a12,12,0,0,1-17-17L111,128,47.51,64.49a12,12,0,0,1,17-17L128,111l63.51-63.52a12,12,0,0,1,17,17L145,128Z" to 1.0f)
+    val Check = icon("check", "M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z" to 1.0f)
+    val More = icon("more", "M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128Zm56-12a12,12,0,1,0,12,12A12,12,0,0,0,196,116ZM60,116a12,12,0,1,0,12,12A12,12,0,0,0,60,116Z" to 1.0f)
+
+    // What can be done with a card, and the ways to add one.
+    val Share = icon("share", "M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96H80a8,8,0,0,1,0,16H56v96H200V112H176a8,8,0,0,1,0-16h24A16,16,0,0,1,216,112ZM93.66,69.66,120,43.31V136a8,8,0,0,0,16,0V43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,69.66Z" to 1.0f)
+    val Refresh = icon("refresh", "M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z" to 1.0f)
+    val Edit = icon("edit", "M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z" to 1.0f)
+    val Pin = icon("pin", "M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z" to 1.0f)
+    val Pinned = icon("pinned", "M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z" to 1.0f)
+    val Trash = icon("trash", "M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z" to 1.0f)
+    val Flash = icon("flash", "M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71l84.62-90.66L136.16,94.43a8,8,0,0,0,5,9.06l52.8,19.8Z" to 1.0f)
+    val FlashOn = icon("flashon", "M213.85,125.46l-112,120a8,8,0,0,1-13.69-7l14.66-73.33L45.19,143.49a8,8,0,0,1-3-13l112-120a8,8,0,0,1,13.69,7L153.18,90.9l57.63,21.61a8,8,0,0,1,3,12.95Z" to 1.0f)
+    val Gallery = icon("gallery", "M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,172l52-52,80,80H40Zm176,28H194.63l-36-36,20-20L216,181.38V200ZM144,100a12,12,0,1,1,12,12A12,12,0,0,1,144,100Z" to 1.0f)
+    val Camera = icon("camera", "M208,56H180.28L166.65,35.56A8,8,0,0,0,160,32H96a8,8,0,0,0-6.65,3.56L75.71,56H48A24,24,0,0,0,24,80V192a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80A24,24,0,0,0,208,56Zm8,136a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H80a8,8,0,0,0,6.66-3.56L100.28,48h55.43l13.63,20.44A8,8,0,0,0,176,72h32a8,8,0,0,1,8,8ZM128,88a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,88Zm0,72a28,28,0,1,1,28-28A28,28,0,0,1,128,160Z" to 1.0f)
+    val File = icon("file", "M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z" to 1.0f)
 }
