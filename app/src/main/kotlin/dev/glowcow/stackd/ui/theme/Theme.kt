@@ -34,7 +34,7 @@ data class StackdColors(
     val muted: Color,
     val line: Color,
     val chip: Color,
-    /** Page background and blocks of the grouped screens: settings and sheets. */
+    /** The ground of every page and sheet, and the blocks that lie on it. */
     val groupBg: Color,
     val group: Color,
     val accent: Color = Color(0xFFD97757),

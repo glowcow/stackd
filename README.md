@@ -142,9 +142,9 @@ uninstalled before installing a newer one.
 ## Design
 
 Mockups and the launcher icon come from the `stackd-design` bundle. The
-default *classic* scheme is neutral grey — light `#FAFAFA` / dark `#161616`
+default *classic* scheme is neutral grey — light `#F1F1F1` / dark `#101010`
 backgrounds, accent `#1F6FEB`; the *warm* scheme of the original design has
-`#FAF9F5` / `#1A1A18` and accent `#D97757`. Card colours start from
+`#F0EEE6` / `#141413` and accent `#D97757`. Card colours start from
 `#6A9BCC #788C5D #CBCADB #E3DACC #BCD1CA #141413`. UI font: Arimo, which
 covers every language of the app, with page titles in Cormorant Garamond;
 icons are Phosphor.

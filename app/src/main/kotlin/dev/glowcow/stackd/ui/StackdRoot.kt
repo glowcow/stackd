@@ -82,7 +82,7 @@ fun StackdRoot(openCard: Flow<String>, openSettings: Flow<Unit>) {
 
     // Status bar icons follow the theme, except over the always-dark scanner.
     val lightIcons = !StackdTheme.colors.isDark && backStack.lastOrNull() !is ScannerRoute
-    val ground = StackdTheme.colors.bg
+    val ground = StackdTheme.colors.groupBg
     val view = LocalView.current
     SideEffect {
         val window = (view.context as? Activity)?.window ?: return@SideEffect

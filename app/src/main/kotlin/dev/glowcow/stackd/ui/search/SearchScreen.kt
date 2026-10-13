@@ -84,7 +84,6 @@ fun SearchScreen(
     TabScreen(
         TopTab.SEARCH,
         onTab,
-        ground = c.bg,
         header = {
             Row(
                 Modifier
@@ -92,7 +91,7 @@ fun SearchScreen(
                     .fillMaxWidth()
                     .height(48.dp)
                     .clip(CircleShape)
-                    .background(c.chip)
+                    .background(c.group)
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),

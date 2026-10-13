@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg">#FAFAFA</color>
+    <color name="ground">#F1F1F1</color>
 </resources>

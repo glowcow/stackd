@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg">#161616</color>
+    <color name="ground">#101010</color>
 </resources>

@@ -193,7 +193,6 @@ fun HomeScreen(
     TabScreen(
         TopTab.CARDS,
         onTab,
-        ground = c.bg,
         edge = true,
         header = {
             Box(Modifier.graphicsLayer { alpha = 1f - wallet.progress }) {

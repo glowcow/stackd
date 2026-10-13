@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.Stackd" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@color/bg</item>
-        <item name="android:windowSplashScreenBackground">@color/bg</item>
+        <item name="android:windowBackground">@color/ground</item>
+        <item name="android:windowSplashScreenBackground">@color/ground</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
     </style>
 </resources>

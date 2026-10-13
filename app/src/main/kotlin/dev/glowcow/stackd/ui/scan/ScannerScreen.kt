@@ -127,7 +127,7 @@ fun ScannerScreen(
         )
     }
 
-    Column(Modifier.fillMaxSize().background(c.bg).statusBarsPadding().navigationBarsPadding()) {
+    Column(Modifier.fillMaxSize().background(c.groupBg).statusBarsPadding().navigationBarsPadding()) {
         Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton48(StackdIcons.Close, stringResource(R.string.close), onClick = onClose)
             PageTitle(stringResource(if (photo) R.string.add_photo else R.string.tab_scanner), Modifier.weight(1f).padding(start = 4.dp, end = 8.dp))
@@ -176,7 +176,7 @@ fun ScannerScreen(
                     modifier = Modifier
                         .widthIn(max = 280.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(c.bg)
+                        .background(c.groupBg)
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                 )
                 if (!hasCamera) {
