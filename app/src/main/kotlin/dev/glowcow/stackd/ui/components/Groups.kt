@@ -2,10 +2,12 @@ package dev.glowcow.stackd.ui.components
 
 import android.content.pm.ActivityInfo
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,17 +42,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -66,7 +75,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,6 +84,7 @@ import dev.glowcow.stackd.ui.theme.AppFont
 import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.ui.theme.StackdTheme
 import dev.glowcow.stackd.ui.theme.inked
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** Rounded block of rows on the grouped background. */
@@ -112,11 +121,14 @@ fun GroupRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         if (icon != null) Icon(icon, null, tint = iconTint, modifier = Modifier.size(22.dp).inked(iconTint))
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        // Beside a value the title keeps its words whole, up to half a phone's width; the value takes what is left.
+        Column(if (value == null) Modifier.weight(1f) else Modifier.widthIn(max = TITLE_BESIDE_VALUE), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(title, Modifier.inked(titleColor), color = titleColor, fontSize = 16.sp, fontWeight = FontWeight.Medium)
             if (subtitle != null) Text(subtitle, color = c.muted, fontSize = 13.sp)
         }
-        if (value != null) Text(value, color = c.muted, textAlign = TextAlign.End)
+        if (value != null) {
+            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) { RunningText(value, c.muted) }
+        }
         when {
             trailing != null -> trailing()
             // The chevron points along the reading direction.
@@ -128,6 +140,51 @@ fun GroupRow(
             )
         }
     }
+}
+
+/**
+ * One line of [text] that, when it is longer than its place — a long value, a large font on a small phone —
+ * runs to its end and back, pausing at each, instead of breaking into lines.
+ */
+@Composable
+fun RunningText(text: String, color: Color, modifier: Modifier = Modifier) {
+    val scroll = rememberScrollState()
+    val density = LocalDensity.current
+    LaunchedEffect(text, scroll.maxValue) {
+        val far = scroll.maxValue
+        if (far <= 0) {
+            scroll.scrollTo(0)
+            return@LaunchedEffect
+        }
+        val millis = (far / with(density) { RUN_SPEED.toPx() } * 1000).toInt()
+        while (true) {
+            delay(RUN_PAUSE)
+            scroll.animateScrollTo(far, tween(millis, easing = LinearEasing))
+            delay(RUN_PAUSE)
+            scroll.animateScrollTo(0, tween(millis, easing = LinearEasing))
+        }
+    }
+    Text(
+        text,
+        modifier
+            // The side the line goes on past fades out, so it is seen to go on.
+            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+            .drawWithContent {
+                drawContent()
+                val fade = RUN_FADE.toPx()
+                if (scroll.value > 0) drawRect(Brush.horizontalGradient(0f to Color.Transparent, 1f to Color.Black, endX = fade), size = Size(fade, size.height), blendMode = BlendMode.DstIn)
+                if (scroll.value < scroll.maxValue) drawRect(
+                    Brush.horizontalGradient(0f to Color.Black, 1f to Color.Transparent, startX = size.width - fade, endX = size.width),
+                    topLeft = Offset(size.width - fade, 0f),
+                    size = Size(fade, size.height),
+                    blendMode = BlendMode.DstIn,
+                )
+            }
+            .horizontalScroll(scroll, enabled = false),
+        color = color,
+        maxLines = 1,
+        softWrap = false,
+    )
 }
 
 /**
@@ -286,3 +343,11 @@ fun <T> ChoiceSheet(
         }
     }
 }
+
+// Beside a value a title keeps its words whole up to this width.
+private val TITLE_BESIDE_VALUE = 220.dp
+
+// A running line moves this far a second and rests this long at each end, its cut side fading over this much.
+private val RUN_SPEED = 30.dp
+private const val RUN_PAUSE = 1500L
+private val RUN_FADE = 16.dp
