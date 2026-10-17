@@ -30,12 +30,13 @@ Spanish.
 
 - **Stack** — cards overlap like a deck, the newest in front; scrolling
   leafs through them, pinned cards form a stack of their own.
-- **Open in place** — a tapped card unfolds its fields and barcode, as in
-  Apple Wallet; the screen stays on at full brightness while it is open.
+- **Open in place** — a tapped card unfolds its fields and barcode at full
+  brightness, as in Apple Wallet, to share, edit or pin it.
 - **Add** — a `.pkpass` file, a live barcode scan, a barcode in a gallery
   image, a photo of the card as its cover, or the number typed by hand.
 - **`.pkpass`** — opens passes and `.pkpasses` bundles from mail, a browser
   or a file manager, with their colours, images and translations.
+- **Search** — finds a card by its name, number or note.
 - **Pass updates** — a tap refreshes a pass from its issuer and the phone
   answers in the hand; on a schedule it notifies what changed. Off by default.
 - **Backup** — every card and the settings in one file, encrypted with a
@@ -144,8 +145,9 @@ uninstalled before installing a newer one.
 Mockups and the launcher icon come from the `stackd-design` bundle. The
 default *classic* scheme is neutral grey — light `#F1F1F1` / dark `#101010`
 backgrounds, accent `#1F6FEB`; the *warm* scheme of the original design has
-`#F0EEE6` / `#141413` and accent `#D97757`. Card colours start from
-`#6A9BCC #788C5D #CBCADB #E3DACC #BCD1CA #141413`. UI font: Arimo, which
+`#F0EEE6` / `#141413` and accent `#D97757`. Card colours are
+the design's muted `#D97757 #6A9BCC #788C5D #CBCADB #E3DACC #BCD1CA #141413`,
+then a row of vivid and deep ones. UI font: Arimo, which
 covers every language of the app, with page titles in Cormorant Garamond;
 icons are Phosphor.
 The header and the tab bar — an island floating at the bottom — are frosted
