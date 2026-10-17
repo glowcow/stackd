@@ -22,6 +22,7 @@
     <string name="add_scan">Scan a barcode</string>
     <string name="close">Close</string>
     <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="delete_title">Delete “%1$s”?</string>
@@ -87,6 +88,10 @@
     <string name="update_failed">Couldn’t update the pass</string>
     <string name="updates_channel">Pass updates</string>
 
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_cards_hint">Brightness and pass updates</string>
+    <string name="settings_backup">Backup</string>
+    <string name="settings_credits">Licence and credits</string>
     <string name="settings_theme">Theme</string>
     <string name="theme_system">System default</string>
     <string name="theme_light">Light</string>
@@ -108,6 +113,8 @@
     <string name="settings_backup_restore">Restore from a backup</string>
     <string name="settings_backup_restore_hint">Adds the cards from the file to the ones here</string>
     <string name="backup_password">Password</string>
+    <string name="password_show">Show the password</string>
+    <string name="password_hide">Hide the password</string>
     <string name="backup_password_note">With a password the file is encrypted. Without one anybody who gets the file can read the cards in it.</string>
     <string name="backup_save_pick">Choose where to save</string>
     <string name="backup_saved">Backup saved</string>

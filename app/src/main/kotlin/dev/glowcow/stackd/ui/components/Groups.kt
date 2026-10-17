@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -70,6 +71,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogWindowProvider
+import dev.glowcow.stackd.R
 import dev.glowcow.stackd.ui.theme.AppFont
 import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.ui.theme.StackdTheme
@@ -217,35 +219,50 @@ fun GroupField(
     var field by remember { mutableStateOf(TextFieldValue(value, if (selected > 0) TextRange(0, selected) else TextRange(value.length))) }
     // The text may be set from outside; the cursor then goes to its end.
     if (field.text != value) field = TextFieldValue(value, TextRange(value.length))
-    Column(
+    var shown by remember { mutableStateOf(false) }
+    Row(
         Modifier
             .fillMaxWidth()
             // A tap anywhere on the row puts the cursor into the field.
             .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { focus.requestFocus() }
-            .heightIn(min = 58.dp)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+            .heightIn(min = 58.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label, color = c.muted, fontSize = 13.sp)
-        Box {
-            if (value.isEmpty() && placeholder != null) Text(placeholder, color = c.muted, fontSize = 15.sp)
-            BasicTextField(
-                value = field,
-                onValueChange = {
-                    field = it
-                    if (it.text != value) onChange(it.text)
-                },
-                singleLine = singleLine,
-                minLines = if (singleLine) 1 else 3,
-                textStyle = TextStyle(color = c.text, fontFamily = AppFont, fontSize = 15.sp),
-                cursorBrush = SolidColor(c.accent),
-                visualTransformation = if (secret) PasswordVisualTransformation() else VisualTransformation.None,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = if (secret) KeyboardType.Password else keyboard,
-                    capitalization = if (capitalize) KeyboardCapitalization.Sentences else KeyboardCapitalization.None,
-                ),
-                modifier = Modifier.fillMaxWidth().focusRequester(focus),
-            )
+        Column(
+            Modifier.weight(1f).padding(start = 16.dp, end = if (secret) 0.dp else 16.dp, top = 12.dp, bottom = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+        ) {
+            Text(label, color = c.muted, fontSize = 13.sp)
+            Box {
+                if (value.isEmpty() && placeholder != null) Text(placeholder, color = c.muted, fontSize = 15.sp)
+                BasicTextField(
+                    value = field,
+                    onValueChange = {
+                        field = it
+                        if (it.text != value) onChange(it.text)
+                    },
+                    singleLine = singleLine,
+                    minLines = if (singleLine) 1 else 3,
+                    textStyle = TextStyle(color = c.text, fontFamily = AppFont, fontSize = 15.sp),
+                    cursorBrush = SolidColor(c.accent),
+                    visualTransformation = if (secret && !shown) PasswordVisualTransformation() else VisualTransformation.None,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = if (secret) KeyboardType.Password else keyboard,
+                        capitalization = if (capitalize) KeyboardCapitalization.Sentences else KeyboardCapitalization.None,
+                    ),
+                    modifier = Modifier.fillMaxWidth().focusRequester(focus),
+                )
+            }
+        }
+        // What is typed blind can be looked at: the eye shows it and hides it again.
+        if (secret) {
+            Box(Modifier.padding(end = 4.dp)) {
+                IconButton48(
+                    if (shown) StackdIcons.EyeSlash else StackdIcons.Eye,
+                    stringResource(if (shown) R.string.password_hide else R.string.password_show),
+                    tint = c.muted,
+                ) { shown = !shown }
+            }
         }
     }
 }

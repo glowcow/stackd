@@ -20,6 +20,7 @@
     <string name="add_scan">Скенирај бар-код</string>
     <string name="close">Затвори</string>
     <string name="cancel">Откажи</string>
+    <string name="back">Назад</string>
     <string name="save">Сачувај</string>
     <string name="delete">Избриши</string>
     <string name="delete_title">Избрисати „%1$s“?</string>
@@ -85,6 +86,10 @@
     <string name="update_failed">Ажурирање пропуснице није успело</string>
     <string name="updates_channel">Ажурирања пропусница</string>
 
+    <string name="settings_appearance">Изглед</string>
+    <string name="settings_cards_hint">Осветљеност и ажурирање пропусница</string>
+    <string name="settings_backup">Резервна копија</string>
+    <string name="settings_credits">Лиценца и захвалнице</string>
     <string name="settings_theme">Тема</string>
     <string name="theme_system">Подразумевано у систему</string>
     <string name="theme_light">Светла</string>
@@ -106,6 +111,8 @@
     <string name="settings_backup_restore">Врати из копије</string>
     <string name="settings_backup_restore_hint">Додаје картице из датотеке онима које већ постоје</string>
     <string name="backup_password">Лозинка</string>
+    <string name="password_show">Прикажи лозинку</string>
+    <string name="password_hide">Сакриј лозинку</string>
     <string name="backup_password_note">Са лозинком је датотека шифрована. Без лозинке картице може да прочита свако ко дође до датотеке.</string>
     <string name="backup_save_pick">Изабери где да се сачува</string>
     <string name="backup_saved">Копија је сачувана</string>

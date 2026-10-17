@@ -13,6 +13,8 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.clipRect
@@ -20,6 +22,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
@@ -38,6 +41,7 @@ fun Modifier.frosted(page: GraphicsLayer, ground: Color, fade: Dp = 0.dp, fadeDo
         val radius = FROST_BLUR.toPx()
         val at = origin()
         frost.renderEffect = BlurEffect(radius, radius, TileMode.Clamp)
+        frost.colorFilter = if (ground.luminance() < 0.5f) DIM else LIFT
         // The page is redrawn over an opaque ground, so nothing sharp shows through the blur.
         frost.record {
             drawRect(ground)
@@ -91,6 +95,11 @@ fun Modifier.solid() = pointerInput(Unit) {}
 const val GLASS_LINE = 0.12f
 
 private val FROST_BLUR = 20.dp
+
+// What shows through is pulled halfway to black under dark glass and to white under light glass, so a white page under
+// a dark bar does not turn it mid-grey and its labels stay readable; a page of the glass's own darkness hardly changes.
+private val DIM = ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(0.5f, 0f, 0f, 0f, 0f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 1f, 0f)))
+private val LIFT = ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(0.5f, 0f, 0f, 0f, 127.5f, 0f, 0.5f, 0f, 0f, 127.5f, 0f, 0f, 0.5f, 0f, 127.5f, 0f, 0f, 0f, 1f, 0f)))
 
 // One strength of glass for every bar and panel of the app.
 private const val FROST_TINT = 0.5f

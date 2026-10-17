@@ -40,7 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -150,6 +152,7 @@ fun HomeScreen(
 ) {
     val c = StackdTheme.colors
     val context = LocalContext.current
+    val haptics = LocalHapticFeedback.current
     val resources = LocalResources.current
     val cards by vm.cards.collectAsStateWithLifecycle()
     val settings by vm.settings.collectAsStateWithLifecycle()
@@ -261,6 +264,8 @@ fun HomeScreen(
                                                 UpdateOutcome.Unchanged -> resources.getString(R.string.update_same)
                                                 UpdateOutcome.Failed -> resources.getString(R.string.update_failed)
                                             }
+                                            // The issuer answered a wait the user started; the hand feels whether it worked.
+                                            haptics.performHapticFeedback(if (outcome == UpdateOutcome.Failed) HapticFeedbackType.Reject else HapticFeedbackType.Confirm)
                                             Toast.makeText(context, text, if (lines.isEmpty()) Toast.LENGTH_SHORT else Toast.LENGTH_LONG).show()
                                         }
                                     }

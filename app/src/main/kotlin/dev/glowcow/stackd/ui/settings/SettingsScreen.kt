@@ -5,22 +5,8 @@ import android.app.LocaleManager
 import android.os.LocaleList
 import android.net.Uri
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import dev.glowcow.stackd.backup.Backup
 import dev.glowcow.stackd.backup.RestoreOutcome
-import dev.glowcow.stackd.ui.theme.AppFont
 import java.time.LocalDate
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -61,6 +47,7 @@ import dev.glowcow.stackd.ui.components.GroupDivider
 import dev.glowcow.stackd.ui.components.GroupField
 import dev.glowcow.stackd.ui.components.GroupRow
 import dev.glowcow.stackd.ui.components.ChoiceSheet
+import dev.glowcow.stackd.ui.components.DetailScreen
 import dev.glowcow.stackd.ui.components.GroupSheet
 import dev.glowcow.stackd.ui.components.SwitchRow
 import dev.glowcow.stackd.ui.components.TabScreen
@@ -68,6 +55,7 @@ import dev.glowcow.stackd.ui.components.TopTab
 import dev.glowcow.stackd.update.AppRelease
 import dev.glowcow.stackd.update.AppUpdateState
 import dev.glowcow.stackd.update.AppUpdater
+import dev.glowcow.stackd.ui.theme.StackdIcons
 import dev.glowcow.stackd.ui.theme.StackdTheme
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -110,15 +98,99 @@ class SettingsViewModel(private val store: SettingsStore, val updater: AppUpdate
     fun setAppUpdate(on: Boolean) = viewModelScope.launch { store.setAppUpdate(on) }
 }
 
+/** The subjects of the settings, each on a page of its own. */
+enum class SettingsPage { APPEARANCE, CARDS, BACKUP, CREDITS }
+
 @Composable
-fun SettingsScreen(
-    onTab: (TopTab) -> Unit,
-    vm: SettingsViewModel = viewModel { (this[APPLICATION_KEY] as StackdApp).container.let { SettingsViewModel(it.settings, it.appUpdater, it.backup) } },
-) {
+private fun settingsVm(): SettingsViewModel =
+    viewModel { (this[APPLICATION_KEY] as StackdApp).container.let { SettingsViewModel(it.settings, it.appUpdater, it.backup) } }
+
+@Composable
+fun SettingsScreen(onTab: (TopTab) -> Unit, onPage: (SettingsPage) -> Unit, vm: SettingsViewModel = settingsVm()) {
     val c = StackdTheme.colors
     val settings by vm.settings.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val update by vm.updater.state.collectAsStateWithLifecycle()
+    val locales = remember(context) { context.getSystemService(LocaleManager::class.java) }
+    val language = locales.applicationLocales.takeUnless { it.isEmpty }?.get(0)?.language?.let { if (it == "iw") "he" else it }
+    // The weekly check reports through a notification, so turning it on asks for the permission.
+    val notifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
+    fun setAppUpdate(on: Boolean) {
+        vm.setAppUpdate(on)
+        if (on) notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+    var release by remember { mutableStateOf<AppRelease?>(null) }
+
+    TabScreen(TopTab.SETTINGS, onTab) { top, bottom ->
+        Column(
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(top = top, bottom = bottom + 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Group {
+                GroupRow(
+                    stringResource(R.string.settings_appearance),
+                    subtitle = listOf(
+                        stringResource(THEMES.first { it.first == settings.theme }.second),
+                        stringResource(PALETTES.first { it.first == settings.palette }.second),
+                        LANGUAGES.firstOrNull { it.first == language }?.second ?: stringResource(R.string.language_system),
+                    ).distinct().joinToString(" · "),
+                    icon = StackdIcons.Palette,
+                    onClick = { onPage(SettingsPage.APPEARANCE) },
+                )
+                GroupDivider()
+                GroupRow(stringResource(R.string.tab_cards), subtitle = stringResource(R.string.settings_cards_hint), icon = StackdIcons.Cards, onClick = { onPage(SettingsPage.CARDS) })
+                GroupDivider()
+                GroupRow(stringResource(R.string.settings_backup), subtitle = stringResource(R.string.settings_backup_save_hint), icon = StackdIcons.Floppy, onClick = { onPage(SettingsPage.BACKUP) })
+            }
+            Group {
+                GroupRow(
+                    stringResource(R.string.settings_version),
+                    subtitle = when (val s = update) {
+                        AppUpdateState.Idle -> stringResource(if (vm.updater.supported) R.string.app_update_check else R.string.app_update_dev)
+                        AppUpdateState.Checking -> stringResource(R.string.app_update_checking)
+                        AppUpdateState.UpToDate -> stringResource(R.string.app_update_latest)
+                        AppUpdateState.Failed -> stringResource(R.string.app_update_failed)
+                        is AppUpdateState.Available -> stringResource(R.string.app_update_available, s.release.version)
+                        is AppUpdateState.Downloading -> stringResource(R.string.app_update_downloading, (s.progress * 100).toInt())
+                    },
+                    value = vm.updater.current,
+                    onClick = when (val s = update) {
+                        AppUpdateState.Checking, is AppUpdateState.Downloading -> null
+                        is AppUpdateState.Available -> ({ release = s.release })
+                        else -> if (vm.updater.supported) vm.updater::checkNow else null
+                    },
+                )
+                if (vm.updater.supported) {
+                    GroupDivider()
+                    SwitchRow(stringResource(R.string.settings_app_update), stringResource(R.string.settings_app_update_hint), settings.appUpdate, ::setAppUpdate)
+                }
+            }
+            Group {
+                GroupRow(stringResource(R.string.settings_credits), icon = StackdIcons.Scroll, onClick = { onPage(SettingsPage.CREDITS) })
+            }
+        }
+    }
+
+    release?.let { r ->
+        GroupSheet(stringResource(R.string.app_update_available, r.version), onDismiss = { release = null }) { pick ->
+            if (r.notes.isNotEmpty()) {
+                Text(
+                    r.notes,
+                    color = c.muted,
+                    fontSize = 14.sp,
+                    modifier = Modifier.heightIn(max = 280.dp).verticalScroll(rememberScrollState()).padding(start = 4.dp, end = 4.dp, bottom = 14.dp),
+                )
+            }
+            Group { GroupRow(stringResource(R.string.app_update_install), onClick = { pick { vm.updater.install(r) } }) }
+        }
+    }
+}
+
+/** One subject of the settings on a page of its own. */
+@Composable
+fun SettingsPageScreen(page: SettingsPage, onBack: () -> Unit, vm: SettingsViewModel = settingsVm()) {
+    val settings by vm.settings.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     // The system keeps the per-app language, shared with Settings → Apps → App language.
     val locales = remember(context) { context.getSystemService(LocaleManager::class.java) }
     // Hebrew reports its old code on some system versions.
@@ -129,12 +201,111 @@ fun SettingsScreen(
         vm.setAutoUpdate(on)
         if (on) notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
-    fun setAppUpdate(on: Boolean) {
-        vm.setAppUpdate(on)
-        if (on) notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
-    }
-    var release by remember { mutableStateOf<AppRelease?>(null) }
     var picker by rememberSaveable { mutableStateOf<Picker?>(null) }
+    fun setLanguage(tag: String?) {
+        language = tag
+        locales.applicationLocales = tag?.let { LocaleList.forLanguageTags(it) } ?: LocaleList.getEmptyLocaleList()
+    }
+    val title = stringResource(
+        when (page) {
+            SettingsPage.APPEARANCE -> R.string.settings_appearance
+            SettingsPage.CARDS -> R.string.tab_cards
+            SettingsPage.BACKUP -> R.string.settings_backup
+            SettingsPage.CREDITS -> R.string.settings_credits
+        },
+    )
+    if (page == SettingsPage.BACKUP) return BackupPage(title, vm, onBack)
+
+    DetailScreen(title, StackdIcons.Back, stringResource(R.string.back), onBack) {
+        when (page) {
+            SettingsPage.APPEARANCE -> Group {
+                GroupRow(
+                    stringResource(R.string.settings_theme),
+                    value = stringResource(THEMES.first { it.first == settings.theme }.second),
+                    onClick = { picker = Picker.THEME },
+                )
+                GroupDivider()
+                GroupRow(
+                    stringResource(R.string.settings_palette),
+                    value = stringResource(PALETTES.first { it.first == settings.palette }.second),
+                    onClick = { picker = Picker.PALETTE },
+                )
+                GroupDivider()
+                GroupRow(
+                    stringResource(R.string.settings_language),
+                    value = LANGUAGES.firstOrNull { it.first == language }?.second ?: stringResource(R.string.language_system),
+                    onClick = { picker = Picker.LANGUAGE },
+                )
+            }
+            SettingsPage.CARDS -> {
+                Group {
+                    SwitchRow(stringResource(R.string.settings_brightness), stringResource(R.string.settings_brightness_hint), settings.maxBrightness, vm::setMaxBrightness)
+                }
+                Group {
+                    SwitchRow(stringResource(R.string.settings_auto_update), stringResource(R.string.settings_auto_update_hint), settings.autoUpdate, ::setAutoUpdate)
+                    if (settings.autoUpdate) {
+                        GroupDivider()
+                        GroupRow(
+                            stringResource(R.string.settings_update_interval),
+                            value = hoursLabel(settings.updateHours),
+                            onClick = { picker = Picker.INTERVAL },
+                        )
+                        GroupDivider()
+                        SwitchRow(stringResource(R.string.settings_notify_all), stringResource(R.string.settings_notify_all_hint), settings.notifyAllChanges, vm::setNotifyAllChanges)
+                    }
+                }
+            }
+            SettingsPage.CREDITS -> Group {
+                GroupRow(stringResource(R.string.settings_licence), value = "GPL-3.0-or-later")
+                GroupDivider()
+                GroupRow(stringResource(R.string.settings_icons), value = "Phosphor · MIT")
+                GroupDivider()
+                GroupRow(stringResource(R.string.settings_font), value = "Arimo · SIL OFL 1.1")
+                GroupDivider()
+                GroupRow(stringResource(R.string.settings_title_font), value = "Cormorant Garamond · SIL OFL 1.1")
+            }
+            SettingsPage.BACKUP -> Unit
+        }
+    }
+
+    when (picker) {
+        Picker.THEME -> ChoiceSheet(
+            title = stringResource(R.string.settings_theme),
+            options = THEMES.map { (mode, label) -> mode to stringResource(label) },
+            selected = settings.theme,
+            onSelect = { vm.setTheme(it) },
+            onDismiss = { picker = null },
+        )
+        Picker.PALETTE -> ChoiceSheet(
+            title = stringResource(R.string.settings_palette),
+            options = PALETTES.map { (palette, label) -> palette to stringResource(label) },
+            selected = settings.palette,
+            onSelect = { vm.setPalette(it) },
+            onDismiss = { picker = null },
+        )
+        Picker.LANGUAGE -> ChoiceSheet(
+            title = stringResource(R.string.settings_language),
+            options = listOf<Pair<String?, String>>(null to stringResource(R.string.language_system)) + LANGUAGES,
+            selected = language,
+            onSelect = ::setLanguage,
+            onDismiss = { picker = null },
+        )
+        Picker.INTERVAL -> ChoiceSheet(
+            title = stringResource(R.string.settings_update_interval),
+            options = UPDATE_HOURS.map { it to hoursLabel(it) },
+            selected = settings.updateHours,
+            onSelect = { vm.setUpdateHours(it) },
+            onDismiss = { picker = null },
+        )
+        null -> Unit
+    }
+}
+
+/** Saving cards, passes and settings to a file the user picks, and taking them back from one. */
+@Composable
+private fun BackupPage(title: String, vm: SettingsViewModel, onBack: () -> Unit) {
+    val c = StackdTheme.colors
+    val context = LocalContext.current
     // Where a backup goes and where it comes from is the user's pick in the system file picker.
     var sheet by rememberSaveable { mutableStateOf<BackupSheet?>(null) }
     var password by remember { mutableStateOf("") }
@@ -169,110 +340,20 @@ fun SettingsScreen(
             }
         }
     }
-    fun setLanguage(tag: String?) {
-        language = tag
-        locales.applicationLocales = tag?.let { LocaleList.forLanguageTags(it) } ?: LocaleList.getEmptyLocaleList()
-    }
 
-    TabScreen(TopTab.SETTINGS, onTab) { top, bottom ->
-        Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(top = top, bottom = bottom + 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Group {
-                GroupRow(
-                    stringResource(R.string.settings_theme),
-                    value = stringResource(THEMES.first { it.first == settings.theme }.second),
-                    onClick = { picker = Picker.THEME },
-                )
-                GroupDivider()
-                GroupRow(
-                    stringResource(R.string.settings_palette),
-                    value = stringResource(PALETTES.first { it.first == settings.palette }.second),
-                    onClick = { picker = Picker.PALETTE },
-                )
-                GroupDivider()
-                GroupRow(
-                    stringResource(R.string.settings_language),
-                    value = LANGUAGES.firstOrNull { it.first == language }?.second ?: stringResource(R.string.language_system),
-                    onClick = { picker = Picker.LANGUAGE },
-                )
-            }
-            Group {
-                SwitchRow(stringResource(R.string.settings_brightness), stringResource(R.string.settings_brightness_hint), settings.maxBrightness, vm::setMaxBrightness)
-            }
-            Group {
-                SwitchRow(stringResource(R.string.settings_auto_update), stringResource(R.string.settings_auto_update_hint), settings.autoUpdate, ::setAutoUpdate)
-                if (settings.autoUpdate) {
-                    GroupDivider()
-                    GroupRow(
-                        stringResource(R.string.settings_update_interval),
-                        value = hoursLabel(settings.updateHours),
-                        onClick = { picker = Picker.INTERVAL },
-                    )
-                    GroupDivider()
-                    SwitchRow(stringResource(R.string.settings_notify_all), stringResource(R.string.settings_notify_all_hint), settings.notifyAllChanges, vm::setNotifyAllChanges)
-                }
-            }
-            Group {
-                GroupRow(
-                    stringResource(R.string.settings_backup_save),
-                    subtitle = stringResource(R.string.settings_backup_save_hint),
-                    onClick = if (vm.busy) null else ({ sheet = BackupSheet.SAVE }),
-                )
-                GroupDivider()
-                GroupRow(
-                    stringResource(R.string.settings_backup_restore),
-                    subtitle = stringResource(R.string.settings_backup_restore_hint),
-                    onClick = if (vm.busy) null else ({ restoreFrom.launch(arrayOf("*/*")) }),
-                )
-            }
-            Group {
-                GroupRow(
-                    stringResource(R.string.settings_version),
-                    subtitle = when (val s = update) {
-                        AppUpdateState.Idle -> stringResource(if (vm.updater.supported) R.string.app_update_check else R.string.app_update_dev)
-                        AppUpdateState.Checking -> stringResource(R.string.app_update_checking)
-                        AppUpdateState.UpToDate -> stringResource(R.string.app_update_latest)
-                        AppUpdateState.Failed -> stringResource(R.string.app_update_failed)
-                        is AppUpdateState.Available -> stringResource(R.string.app_update_available, s.release.version)
-                        is AppUpdateState.Downloading -> stringResource(R.string.app_update_downloading, (s.progress * 100).toInt())
-                    },
-                    value = vm.updater.current,
-                    onClick = when (val s = update) {
-                        AppUpdateState.Checking, is AppUpdateState.Downloading -> null
-                        is AppUpdateState.Available -> ({ release = s.release })
-                        else -> if (vm.updater.supported) vm.updater::checkNow else null
-                    },
-                )
-                if (vm.updater.supported) {
-                    GroupDivider()
-                    SwitchRow(stringResource(R.string.settings_app_update), stringResource(R.string.settings_app_update_hint), settings.appUpdate, ::setAppUpdate)
-                }
-            }
-            Group {
-                GroupRow(stringResource(R.string.settings_licence), value = "GPL-3.0-or-later")
-                GroupDivider()
-                GroupRow(stringResource(R.string.settings_icons), value = "Phosphor · MIT")
-                GroupDivider()
-                GroupRow(stringResource(R.string.settings_font), value = "Arimo · SIL OFL 1.1")
-                GroupDivider()
-                GroupRow(stringResource(R.string.settings_title_font), value = "Cormorant Garamond · SIL OFL 1.1")
-            }
-        }
-    }
-
-    release?.let { r ->
-        GroupSheet(stringResource(R.string.app_update_available, r.version), onDismiss = { release = null }) { pick ->
-            if (r.notes.isNotEmpty()) {
-                Text(
-                    r.notes,
-                    color = c.muted,
-                    fontSize = 14.sp,
-                    modifier = Modifier.heightIn(max = 280.dp).verticalScroll(rememberScrollState()).padding(start = 4.dp, end = 4.dp, bottom = 14.dp),
-                )
-            }
-            Group { GroupRow(stringResource(R.string.app_update_install), onClick = { pick { vm.updater.install(r) } }) }
+    DetailScreen(title, StackdIcons.Back, stringResource(R.string.back), onBack) {
+        Group {
+            GroupRow(
+                stringResource(R.string.settings_backup_save),
+                subtitle = stringResource(R.string.settings_backup_save_hint),
+                onClick = if (vm.busy) null else ({ sheet = BackupSheet.SAVE }),
+            )
+            GroupDivider()
+            GroupRow(
+                stringResource(R.string.settings_backup_restore),
+                subtitle = stringResource(R.string.settings_backup_restore_hint),
+                onClick = if (vm.busy) null else ({ restoreFrom.launch(arrayOf("*/*")) }),
+            )
         }
     }
 
@@ -300,38 +381,6 @@ fun SettingsScreen(
                 )
             }
         }
-        null -> Unit
-    }
-
-    when (picker) {
-        Picker.THEME -> ChoiceSheet(
-            title = stringResource(R.string.settings_theme),
-            options = THEMES.map { (mode, label) -> mode to stringResource(label) },
-            selected = settings.theme,
-            onSelect = { vm.setTheme(it) },
-            onDismiss = { picker = null },
-        )
-        Picker.PALETTE -> ChoiceSheet(
-            title = stringResource(R.string.settings_palette),
-            options = PALETTES.map { (palette, label) -> palette to stringResource(label) },
-            selected = settings.palette,
-            onSelect = { vm.setPalette(it) },
-            onDismiss = { picker = null },
-        )
-        Picker.LANGUAGE -> ChoiceSheet(
-            title = stringResource(R.string.settings_language),
-            options = listOf<Pair<String?, String>>(null to stringResource(R.string.language_system)) + LANGUAGES,
-            selected = language,
-            onSelect = ::setLanguage,
-            onDismiss = { picker = null },
-        )
-        Picker.INTERVAL -> ChoiceSheet(
-            title = stringResource(R.string.settings_update_interval),
-            options = UPDATE_HOURS.map { it to hoursLabel(it) },
-            selected = settings.updateHours,
-            onSelect = { vm.setUpdateHours(it) },
-            onDismiss = { picker = null },
-        )
         null -> Unit
     }
 }

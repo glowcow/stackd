@@ -20,6 +20,7 @@
     <string name="add_scan">Barcode scannen</string>
     <string name="close">Schließen</string>
     <string name="cancel">Abbrechen</string>
+    <string name="back">Zurück</string>
     <string name="save">Speichern</string>
     <string name="delete">Löschen</string>
     <string name="delete_title">„%1$s“ löschen?</string>
@@ -85,6 +86,10 @@
     <string name="update_failed">Der Pass konnte nicht aktualisiert werden</string>
     <string name="updates_channel">Pass-Aktualisierungen</string>
 
+    <string name="settings_appearance">Darstellung</string>
+    <string name="settings_cards_hint">Helligkeit und Aktualisierung der Pässe</string>
+    <string name="settings_backup">Sicherung</string>
+    <string name="settings_credits">Lizenz und Danksagungen</string>
     <string name="settings_theme">Design</string>
     <string name="theme_system">Systemstandard</string>
     <string name="theme_light">Hell</string>
@@ -106,6 +111,8 @@
     <string name="settings_backup_restore">Aus Sicherung wiederherstellen</string>
     <string name="settings_backup_restore_hint">Fügt die Karten aus der Datei zu den vorhandenen hinzu</string>
     <string name="backup_password">Passwort</string>
+    <string name="password_show">Passwort anzeigen</string>
+    <string name="password_hide">Passwort verbergen</string>
     <string name="backup_password_note">Mit einem Passwort wird die Datei verschlüsselt. Ohne Passwort kann jeder, der die Datei bekommt, die Karten darin lesen.</string>
     <string name="backup_save_pick">Speicherort wählen</string>
     <string name="backup_saved">Sicherung gespeichert</string>

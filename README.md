@@ -36,8 +36,8 @@ Spanish.
   image, a photo of the card as its cover, or the number typed by hand.
 - **`.pkpass`** — opens passes and `.pkpasses` bundles from mail, a browser
   or a file manager, with their colours, images and translations.
-- **Pass updates** — refreshes a pass from its issuer on a tap or on a
-  schedule, and notifies about what changed. Off by default.
+- **Pass updates** — a tap refreshes a pass from its issuer and the phone
+  answers in the hand; on a schedule it notifies what changed. Off by default.
 - **Backup** — every card and the settings in one file, encrypted with a
   password if you set one; also part of Android's own backup.
 - **App updates** — checks the releases on GitHub and installs a new

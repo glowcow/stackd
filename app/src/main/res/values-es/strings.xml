@@ -20,6 +20,7 @@
     <string name="add_scan">Escanear un código de barras</string>
     <string name="close">Cerrar</string>
     <string name="cancel">Cancelar</string>
+    <string name="back">Atrás</string>
     <string name="save">Guardar</string>
     <string name="delete">Eliminar</string>
     <string name="delete_title">¿Eliminar «%1$s»?</string>
@@ -85,6 +86,10 @@
     <string name="update_failed">No se ha podido actualizar el pase</string>
     <string name="updates_channel">Actualizaciones de pases</string>
 
+    <string name="settings_appearance">Apariencia</string>
+    <string name="settings_cards_hint">Brillo y actualización de los pases</string>
+    <string name="settings_backup">Copia de seguridad</string>
+    <string name="settings_credits">Licencia y créditos</string>
     <string name="settings_theme">Tema</string>
     <string name="theme_system">Predeterminado del sistema</string>
     <string name="theme_light">Claro</string>
@@ -106,6 +111,8 @@
     <string name="settings_backup_restore">Restaurar desde una copia</string>
     <string name="settings_backup_restore_hint">Añade las tarjetas del archivo a las que ya hay</string>
     <string name="backup_password">Contraseña</string>
+    <string name="password_show">Mostrar la contraseña</string>
+    <string name="password_hide">Ocultar la contraseña</string>
     <string name="backup_password_note">Con contraseña el archivo se cifra. Sin ella, cualquiera que consiga el archivo puede leer las tarjetas.</string>
     <string name="backup_save_pick">Elegir dónde guardar</string>
     <string name="backup_saved">Copia guardada</string>

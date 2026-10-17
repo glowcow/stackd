@@ -33,6 +33,8 @@ import dev.glowcow.stackd.ui.edit.EditCardScreen
 import dev.glowcow.stackd.ui.home.HomeScreen
 import dev.glowcow.stackd.ui.scan.ScannerScreen
 import dev.glowcow.stackd.ui.search.SearchScreen
+import dev.glowcow.stackd.ui.settings.SettingsPage
+import dev.glowcow.stackd.ui.settings.SettingsPageScreen
 import dev.glowcow.stackd.ui.settings.SettingsScreen
 import dev.glowcow.stackd.ui.theme.StackdTheme
 import kotlinx.coroutines.flow.Flow
@@ -41,6 +43,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object HomeRoute : NavKey
 @Serializable data object SearchRoute : NavKey
 @Serializable data object SettingsRoute : NavKey
+@Serializable data class SettingsPageRoute(val page: SettingsPage) : NavKey
 /** Live barcode scanner, or with [photo] the camera that shoots a card cover. */
 @Serializable data class ScannerRoute(val photo: Boolean = false) : NavKey
 @Serializable data class EditRoute(val id: String? = null, val draft: CardDraft? = null) : NavKey
@@ -126,8 +129,9 @@ fun StackdRoot(openCard: Flow<String>, openSettings: Flow<Unit>) {
                 SearchScreen(onOpen = ::showCard, onTab = ::selectTab)
             }
             entry<SettingsRoute> {
-                SettingsScreen(onTab = ::selectTab)
+                SettingsScreen(onTab = ::selectTab, onPage = { backStack.add(SettingsPageRoute(it)) })
             }
+            entry<SettingsPageRoute> { route -> SettingsPageScreen(route.page, onBack = { backStack.removeLastOrNull() }) }
             entry<ScannerRoute>(metadata = sheet) { key ->
                 ScannerScreen(
                     photo = key.photo,

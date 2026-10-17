@@ -20,6 +20,7 @@
     <string name="add_scan">Zeskanuj kod kreskowy</string>
     <string name="close">Zamknij</string>
     <string name="cancel">Anuluj</string>
+    <string name="back">Wstecz</string>
     <string name="save">Zapisz</string>
     <string name="delete">Usuń</string>
     <string name="delete_title">Usunąć „%1$s”?</string>
@@ -85,6 +86,10 @@
     <string name="update_failed">Nie udało się zaktualizować karty</string>
     <string name="updates_channel">Aktualizacje kart</string>
 
+    <string name="settings_appearance">Wygląd</string>
+    <string name="settings_cards_hint">Jasność i aktualizacja kart</string>
+    <string name="settings_backup">Kopia zapasowa</string>
+    <string name="settings_credits">Licencja i podziękowania</string>
     <string name="settings_theme">Motyw</string>
     <string name="theme_system">Domyślny systemu</string>
     <string name="theme_light">Jasny</string>
@@ -106,6 +111,8 @@
     <string name="settings_backup_restore">Przywróć z kopii</string>
     <string name="settings_backup_restore_hint">Dodaje karty z pliku do tych, które już są</string>
     <string name="backup_password">Hasło</string>
+    <string name="password_show">Pokaż hasło</string>
+    <string name="password_hide">Ukryj hasło</string>
     <string name="backup_password_note">Z hasłem plik jest szyfrowany. Bez hasła karty odczyta każdy, kto dostanie plik.</string>
     <string name="backup_save_pick">Wybierz, gdzie zapisać</string>
     <string name="backup_saved">Kopia zapisana</string>
