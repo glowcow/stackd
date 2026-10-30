@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -197,7 +199,15 @@ fun GroupSheet(title: String, onDismiss: () -> Unit, content: @Composable Column
     val c = StackdTheme.colors
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = state, containerColor = c.groupBg) {
+    // The top stays below the status bar. Material pads the content there by as much of the bar as the sheet has
+    // reached, and a sheet about as tall as the screen then rocks between growing by it and fitting without it.
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        modifier = Modifier.statusBarsPadding(),
+        sheetState = state,
+        containerColor = c.groupBg,
+        contentWindowInsets = { WindowInsets(0) },
+    ) {
         // A sheet is a window of its own, and a window shows Display P3 only when asked to.
         val view = LocalView.current
         SideEffect { (view.parent as? DialogWindowProvider)?.window?.colorMode = ActivityInfo.COLOR_MODE_WIDE_COLOR_GAMUT }
